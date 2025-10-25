@@ -1,11 +1,14 @@
 package se.wmuth.openc25k.utils
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyCallback
 import android.telephony.TelephonyManager
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import timber.log.Timber
 import java.util.concurrent.Executor
 
@@ -40,6 +43,8 @@ class PhoneCallListener(
 
     /**
      * Start listening for phone call state changes
+     *
+     * Requires READ_PHONE_STATE permission - silently fails if not granted
      */
     fun startListening() {
         if (isRegistered) {
@@ -47,20 +52,35 @@ class PhoneCallListener(
             return
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            // Use new TelephonyCallback API for Android 12+
-            telephonyManager.registerTelephonyCallback(
-                context.mainExecutor,
-                telephonyCallback
-            )
-        } else {
-            // Use legacy PhoneStateListener for older versions
-            @Suppress("DEPRECATION")
-            telephonyManager.listen(legacyPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
+        // Check for READ_PHONE_STATE permission
+        val hasPermission = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.READ_PHONE_STATE
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (!hasPermission) {
+            Timber.w("READ_PHONE_STATE permission not granted, phone call auto-pause disabled")
+            return
         }
 
-        isRegistered = true
-        Timber.d("PhoneCallListener started")
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                // Use new TelephonyCallback API for Android 12+
+                telephonyManager.registerTelephonyCallback(
+                    context.mainExecutor,
+                    telephonyCallback
+                )
+            } else {
+                // Use legacy PhoneStateListener for older versions
+                @Suppress("DEPRECATION")
+                telephonyManager.listen(legacyPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE)
+            }
+
+            isRegistered = true
+            Timber.d("PhoneCallListener started successfully")
+        } catch (e: SecurityException) {
+            Timber.e(e, "Failed to register phone call listener due to security exception")
+        }
     }
 
     /**

@@ -117,11 +117,11 @@ class RunTrackingService : Service(), RunTimer.RunTimerListener {
         // Initialize audio focus manager
         audioFocusManager = AudioFocusManager(this)
 
-        // Initialize phone call listener
+        // Initialize phone call listener (only if permission granted)
+        // Note: Permission check is done in PhoneCallListener.startListening()
         phoneCallListener = PhoneCallListener(this) { isInCall ->
             handlePhoneCall(isInCall)
         }
-        phoneCallListener.startListening()
 
         // Create notification channel
         createNotificationChannel()
@@ -180,6 +180,9 @@ class RunTrackingService : Service(), RunTimer.RunTimerListener {
 
         intervals = run.intervals.iterator()
         currentInterval = intervals.next()
+
+        // Start phone call listener (safe to call - checks permissions internally)
+        phoneCallListener.startListening()
 
         // Start foreground service with notification
         startForeground(NOTIFICATION_ID, createNotification())
@@ -455,7 +458,8 @@ class RunTrackingService : Service(), RunTimer.RunTimerListener {
     fun getIntervalRemaining(): String = if (::timer.isInitialized) timer.getIntervalRemaining() else "--:--"
     fun getTotalRemaining(): String = if (::timer.isInitialized) timer.getTotalRemaining() else "--:--"
     fun getCurrentInterval(): Interval? = currentInterval
-    fun getRun(): Run = run
+    fun getRun(): Run? = if (::run.isInitialized) run else null
+    fun hasActiveRun(): Boolean = ::run.isInitialized
 
     // Cleanup
 

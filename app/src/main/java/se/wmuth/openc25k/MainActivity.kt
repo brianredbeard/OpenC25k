@@ -198,10 +198,18 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
     private fun updateActiveRunBanner() {
         val service = trackingService ?: return
 
+        // Only show banner if service has an active run
+        if (!service.hasActiveRun()) {
+            hideActiveRunBanner()
+            return
+        }
+
         binding.root.findViewById<View>(R.id.activeRunBanner)?.visibility = View.VISIBLE
 
         val run = service.getRun()
-        binding.root.findViewById<android.widget.TextView>(R.id.tvBannerRunName)?.text = run.name
+        if (run != null) {
+            binding.root.findViewById<android.widget.TextView>(R.id.tvBannerRunName)?.text = run.name
+        }
 
         val interval = service.getCurrentInterval()
         val intervalRemaining = service.getIntervalRemaining()
