@@ -20,6 +20,8 @@ class RunTimer(iVal: Array<Interval>, listener: RunTimerListener) {
     private var secondsPassed: Int = 0
     private var finished: Boolean = false
     private var thereIsTimer: Boolean = false
+    private var halfwayAnnounced: Boolean = false
+    private val halfwayPoint: Int = totSeconds / 2
 
     interface RunTimerListener {
         /**
@@ -37,6 +39,12 @@ class RunTimer(iVal: Array<Interval>, listener: RunTimerListener) {
          * On each tick, for now always 1 second long, this method is called
          */
         fun tick()
+
+        /**
+         * Called when the run reaches the halfway point
+         * Only triggered for runs longer than 2 minutes (120 seconds)
+         */
+        fun onHalfway()
     }
 
     /**
@@ -108,6 +116,12 @@ class RunTimer(iVal: Array<Interval>, listener: RunTimerListener) {
     private fun tick() {
         intervalSeconds++
         secondsPassed++
+
+        // Check for halfway point (only for runs longer than 2 minutes)
+        if (!halfwayAnnounced && totSeconds > 120 && secondsPassed >= halfwayPoint) {
+            parent.onHalfway()
+            halfwayAnnounced = true
+        }
 
         if (intervalSeconds >= curInterval.time) {
             skip()
