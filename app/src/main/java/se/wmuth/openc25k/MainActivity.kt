@@ -39,8 +39,10 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
     private lateinit var adapter: RunAdapter
     private lateinit var launcher: ActivityResultLauncher<Intent>
     private var beeper: Beeper? = null
+    private var announcer: RunAnnouncer? = null
     private var sound: Boolean = true
     private var vibrate: Boolean = true
+    private var tts: Boolean = true
     private var volume: Float = 0.5f
     private var soundType: SoundType = SoundType.BEEP
 
@@ -48,6 +50,7 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
         handler = DataHandler(this, datastore)
         sound = handler.getSound()
         vibrate = handler.getVibrate()
+        tts = handler.getTTS()
         volume = handler.getVolume()
         soundType = handler.getSoundType()
         runs = handler.getRuns()
@@ -70,6 +73,7 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
         binding.materialToolbar.setOnMenuItemClickListener(menu)
         binding.materialToolbar.menu.findItem(R.id.vibrate).isChecked = vibrate
         binding.materialToolbar.menu.findItem(R.id.sound).isChecked = sound
+        binding.materialToolbar.menu.findItem(R.id.tts).isChecked = tts
 
         launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             handleActivityResult(it.resultCode, it.data)
@@ -83,6 +87,7 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
         intent.putExtra("id", position)
         intent.putExtra("sound", sound)
         intent.putExtra("vibrate", vibrate)
+        intent.putExtra("tts", tts)
         intent.putExtra("volume", volume)
         intent.putExtra("soundType", soundType.name)
         launcher.launch(intent)
@@ -125,12 +130,22 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
         return vibrate
     }
 
+    override fun shouldUseTTS(): Boolean {
+        return tts
+    }
+
     override fun testVolume() {
         if (beeper == null) {
             beeper = Beeper(applicationContext, volume, audioFocusManager, soundType)
         }
+        if (announcer == null) {
+            announcer = RunAnnouncer(this, audioFocusManager)
+        }
         if (sound) {
             beeper?.beep()
+        }
+        if (tts) {
+            announcer?.announce(getString(R.string.tts_test_message))
         }
     }
 
@@ -142,6 +157,11 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
     override fun toggleVibration() {
         vibrate = !vibrate
         handler.setVibrate(vibrate)
+    }
+
+    override fun toggleTTS() {
+        tts = !tts
+        handler.setTTS(tts)
     }
 
     override fun setVolume(nV: Float) {
