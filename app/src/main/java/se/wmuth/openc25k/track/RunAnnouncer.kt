@@ -4,6 +4,7 @@ import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import se.wmuth.openc25k.audio.AudioFocusManager
+import se.wmuth.openc25k.utils.DurationFormatter
 import timber.log.Timber
 import java.util.Locale
 
@@ -95,6 +96,37 @@ class RunAnnouncer(
      */
     fun announceTimeRemaining(timeString: String) {
         announce("$timeString remaining")
+    }
+
+    /**
+     * Announces interval change with duration
+     */
+    fun announceIntervalWithDuration(intervalTitle: String, durationSeconds: Int) {
+        val duration = DurationFormatter.toSpeech(durationSeconds)
+        announce("Now $intervalTitle. $duration")
+    }
+
+    /**
+     * Announces countdown (e.g., "Thirty seconds remaining")
+     */
+    fun announceCountdown(remainingSeconds: Int) {
+        val time = DurationFormatter.toSpeech(remainingSeconds)
+        announce("$time remaining")
+    }
+
+    /**
+     * Announces motivational message
+     */
+    fun announceMotivation(message: String) {
+        announce(message)
+    }
+
+    /**
+     * Announces workout start with total duration
+     */
+    fun announceWorkoutStart(totalDurationSeconds: Int) {
+        val duration = DurationFormatter.toSpeech(totalDurationSeconds)
+        announce("Starting your workout. Total time: $duration")
     }
 
     /**
