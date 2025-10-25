@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:name=".OpenC25kApplication"
         android:allowBackup="true"
@@ -12,9 +15,16 @@
         android:roundIcon="@mipmap/ic_green_round"
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.OpenC25k">
+        <service
+            android:name=".service.RunTrackingService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="health" />
+
         <activity
             android:name=".TrackActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTop" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

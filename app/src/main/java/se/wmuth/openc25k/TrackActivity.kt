@@ -1,138 +1,170 @@
 package se.wmuth.openc25k
 
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Build
 import android.os.Bundle
-import android.os.VibratorManager
+import android.os.IBinder
 import androidx.appcompat.app.AppCompatActivity
-import se.wmuth.openc25k.audio.AudioFocusManager
-import se.wmuth.openc25k.both.Beeper
 import se.wmuth.openc25k.data.Interval
 import se.wmuth.openc25k.data.Run
 import se.wmuth.openc25k.data.model.SoundType
 import se.wmuth.openc25k.databinding.ActivityTrackBinding
-import se.wmuth.openc25k.track.RunAnnouncer
-import se.wmuth.openc25k.track.RunTimer
-import se.wmuth.openc25k.track.Shaker
+import se.wmuth.openc25k.service.RunTrackingService
 import timber.log.Timber
 
 /**
- * Combines all the tracking parts of the app to one cohesive whole
- * Should be sent intent with keys
- *      "id" -> index of the run in the recyclerview: Int
- *      "run" -> run object to track: Run
- *      "sound" -> if sound is enabled: Boolean
- *      "vibrate" -> if vibration is enabled: Boolean
- *      "tts" -> if text-to-speech is enabled: Boolean
- *      "volume" -> what the volume is: Float
- *      "soundType" -> which sound to play: String (SoundType.name)
+ * Activity for tracking a run in progress
+ *
+ * This activity binds to RunTrackingService and displays the current state.
+ * The service handles all timer, audio, and state management.
+ * The activity is just a UI observer that can be destroyed and recreated.
  */
-class TrackActivity : AppCompatActivity(), RunTimer.RunTimerListener {
-    private lateinit var audioFocusManager: AudioFocusManager
-    private lateinit var beeper: Beeper
-    private lateinit var announcer: RunAnnouncer
+class TrackActivity : AppCompatActivity(), RunTrackingService.RunStateListener {
+
     private lateinit var binding: ActivityTrackBinding
-    private lateinit var intentReturn: Intent
-    private lateinit var intervals: Iterator<Interval>
-    private lateinit var shaker: Shaker
-    private lateinit var timer: RunTimer
-    private var sound: Boolean = true
-    private var vibrate: Boolean = true
-    private var tts: Boolean = true
+    private var service: RunTrackingService? = null
+    private var bound = false
+    private var runIndex: Int = -1
+
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
+            val serviceBinder = binder as RunTrackingService.RunTrackingBinder
+            service = serviceBinder.getService()
+            bound = true
+
+            // Register as state listener
+            service?.addStateListener(this@TrackActivity)
+
+            // Update UI with current state
+            updateUIFromService()
+
+            Timber.d("TrackActivity bound to service")
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            service?.removeStateListener(this@TrackActivity)
+            service = null
+            bound = false
+            Timber.d("TrackActivity unbound from service")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTrackBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Get run data from intent
         val run = if (Build.VERSION.SDK_INT >= 33) {
-            intent.getParcelableExtra("run", Run::class.java) ?: return
+            intent.getParcelableExtra("run", Run::class.java)
         } else {
-            // Above is more typesafe but only works on newer SDK
             @Suppress("DEPRECATION")
-            (intent.getParcelableExtra("run") ?: return)
+            intent.getParcelableExtra("run")
         }
 
-        intervals = run.intervals.iterator()
-        sound = intent.getBooleanExtra("sound", true)
-        vibrate = intent.getBooleanExtra("vibrate", true)
-        tts = intent.getBooleanExtra("tts", true)
+        runIndex = intent.getIntExtra("id", -1)
 
-        audioFocusManager = AudioFocusManager(this)
+        if (run == null) {
+            Timber.e("No run provided to TrackActivity")
+            finish()
+            return
+        }
 
-        // Get sound type from intent, default to BEEP if not provided
-        val soundTypeName = intent.getStringExtra("soundType") ?: SoundType.BEEP.name
-        val soundType = SoundType.fromName(soundTypeName)
+        // Check if service is already running
+        val serviceIntent = Intent(this, RunTrackingService::class.java)
+        val serviceRunning = isServiceRunning()
 
-        beeper = Beeper(this, intent.getFloatExtra("volume", 0.5f), audioFocusManager, soundType)
-        announcer = RunAnnouncer(this, audioFocusManager)
-        shaker = Shaker(getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager)
-        timer = RunTimer(run.intervals, this)
+        if (!serviceRunning) {
+            // Start new service with run data
+            serviceIntent.apply {
+                putExtra(RunTrackingService.EXTRA_RUN, run)
+                putExtra(RunTrackingService.EXTRA_RUN_INDEX, runIndex)
+                putExtra(RunTrackingService.EXTRA_SOUND_ENABLED, intent.getBooleanExtra("sound", true))
+                putExtra(RunTrackingService.EXTRA_VIBRATE_ENABLED, intent.getBooleanExtra("vibrate", true))
+                putExtra(RunTrackingService.EXTRA_TTS_ENABLED, intent.getBooleanExtra("tts", true))
+                putExtra(RunTrackingService.EXTRA_VOLUME, intent.getFloatExtra("volume", 0.5f))
+                putExtra(RunTrackingService.EXTRA_SOUND_TYPE, intent.getStringExtra("soundType") ?: SoundType.BEEP.name)
+            }
 
-        binding.twRemainTimer.text = timer.getTotalRemaining()
-        binding.twStatus.text = intervals.next().title
-        binding.twSummary.text = run.description
-        binding.twTimer.text = timer.getIntervalRemaining()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent)
+            } else {
+                startService(serviceIntent)
+            }
+
+            Timber.d("Started RunTrackingService")
+        }
+
+        // Bind to service
+        bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+
+        // Set up button listeners
+        binding.btnStart.setOnClickListener {
+            service?.start()
+        }
+
+        binding.btnPause.setOnClickListener {
+            service?.pause()
+        }
+
+        binding.btnSkip.setOnClickListener {
+            service?.skip()
+        }
+
+        // Initialize UI with run data
         binding.twTitle.text = run.name
+        binding.twSummary.text = run.description
 
-        binding.btnPause.setOnClickListener { timer.pause() }
-        binding.btnSkip.setOnClickListener { timer.skip() }
-        binding.btnStart.setOnClickListener { timer.start() }
-
-        intentReturn = Intent()
-        intentReturn.putExtra("id", intent.getIntExtra("id", 0))
-        setResult(RESULT_CANCELED, intentReturn)
+        Timber.d("TrackActivity created for run: ${run.name}")
     }
 
-    override fun tick() {
-        runOnUiThread {
-            binding.twRemainTimer.text = timer.getTotalRemaining()
-            binding.twTimer.text = timer.getIntervalRemaining()
-        }
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        // Handle notification tap returning to this activity
+        Timber.d("TrackActivity onNewIntent")
+        updateUIFromService()
     }
 
-    override fun nextInterval() {
-        val next = intervals.next()
-        runOnUiThread {
-            binding.twStatus.text = next.title
-            binding.twTimer.text = next.time.toString()
-        }
+    /**
+     * Update UI based on current service state
+     */
+    private fun updateUIFromService() {
+        service?.let { svc ->
+            binding.twRemainTimer.text = svc.getTotalRemaining()
+            binding.twTimer.text = svc.getIntervalRemaining()
+            binding.twStatus.text = svc.getCurrentInterval()?.title ?: ""
 
-        // Stop any in-progress TTS to prevent focus leak
-        announcer.stop()
-
-        // Announce the interval change with duration if TTS is enabled
-        if (tts) {
-            announcer.announceIntervalWithDuration(next.title, next.time)
-        }
-
-        if (next.title == getString(R.string.walk)) {
-            if (sound) {
-                beeper.beep()
-            }
-            if (vibrate) {
-                shaker.walkShake()
-            }
-        } else {
-            if (sound) {
-                beeper.beepMultiple(2u)
-            }
-            if (vibrate) {
-                shaker.jogShake()
-            }
+            // Update button states based on running state
+            binding.btnStart.isEnabled = !svc.isRunning()
+            binding.btnPause.isEnabled = svc.isRunning()
         }
     }
 
-    override fun finishRun() {
+    /**
+     * Check if RunTrackingService is currently running
+     */
+    private fun isServiceRunning(): Boolean {
+        // Simple check - try to bind and see if we get a service
+        // In a production app, you might use ActivityManager
+        return false // For now, always start fresh
+    }
+
+    // RunStateListener implementation
+
+    override fun onTick(intervalRemaining: String, totalRemaining: String) {
         runOnUiThread {
-            binding.twStatus.text = getString(R.string.runComplete)
+            binding.twTimer.text = intervalRemaining
+            binding.twRemainTimer.text = totalRemaining
         }
-        setResult(RESULT_OK, intentReturn)
-        if (sound) {
-            beeper.beepMultiple(4u)
-        }
-        if (vibrate) {
-            shaker.completeShake()
+    }
+
+    override fun onIntervalChange(interval: Interval) {
+        runOnUiThread {
+            binding.twStatus.text = interval.title
+            binding.twTimer.text = interval.time.toString()
         }
     }
 
@@ -140,31 +172,44 @@ class TrackActivity : AppCompatActivity(), RunTimer.RunTimerListener {
         runOnUiThread {
             // Announce halfway point to TalkBack
             binding.root.announceForAccessibility(getString(R.string.halfway_announcement))
-
-            // Stop any in-progress TTS to prevent focus leak
-            announcer.stop()
-
-            // Announce via TTS if enabled
-            if (tts) {
-                announcer.announce(getString(R.string.halfway_announcement))
-            }
         }
-
-        // Single celebratory beep
-        if (sound) {
-            beeper.beep()
-        }
-        if (vibrate) {
-            shaker.walkShake()
-        }
-
         Timber.d("Halfway point reached!")
+    }
+
+    override fun onRunComplete() {
+        runOnUiThread {
+            binding.twStatus.text = getString(R.string.runComplete)
+        }
+
+        // Return success result
+        val resultIntent = Intent().apply {
+            putExtra("id", runIndex)
+        }
+        setResult(RESULT_OK, resultIntent)
+
+        Timber.d("Run completed!")
+
+        // Finish activity after short delay
+        binding.root.postDelayed({
+            finish()
+        }, 2000)
+    }
+
+    override fun onRunStateChanged(isRunning: Boolean) {
+        runOnUiThread {
+            binding.btnStart.isEnabled = !isRunning
+            binding.btnPause.isEnabled = isRunning
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        timer.pause()
-        announcer.release()
-        beeper.release()
+        // Unbind from service
+        if (bound) {
+            service?.removeStateListener(this)
+            unbindService(serviceConnection)
+            bound = false
+        }
+        Timber.d("TrackActivity destroyed")
     }
 }
