@@ -15,6 +15,7 @@ import se.wmuth.openc25k.both.Beeper
 import se.wmuth.openc25k.data.Run
 import se.wmuth.openc25k.databinding.ActivityMainBinding
 import se.wmuth.openc25k.data.model.SoundType
+import se.wmuth.openc25k.data.repository.ProgressRepository
 import se.wmuth.openc25k.main.DataHandler
 import se.wmuth.openc25k.main.RunAdapter
 import se.wmuth.openc25k.main.SettingsMenu
@@ -37,8 +38,10 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
     private lateinit var volDialog: VolumeDialog
     private lateinit var soundSelectionDialog: SoundSelectionDialog
     private lateinit var handler: DataHandler
+    private lateinit var progressRepository: ProgressRepository
     private lateinit var adapter: RunAdapter
     private lateinit var launcher: ActivityResultLauncher<Intent>
+    private lateinit var binding: ActivityMainBinding
     private var beeper: Beeper? = null
     private var announcer: RunAnnouncer? = null
     private var sound: Boolean = true
@@ -49,6 +52,7 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         handler = DataHandler(this, datastore)
+        progressRepository = ProgressRepository(handler)
         sound = handler.getSound()
         vibrate = handler.getVibrate()
         tts = handler.getTTS()
@@ -59,7 +63,7 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
         audioFocusManager = AudioFocusManager(this)
 
         super.onCreate(savedInstanceState)
-        val binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         volDialog = VolumeDialog(this, this, layoutInflater)
@@ -67,7 +71,7 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
         menu = SettingsMenu(this, binding.materialToolbar.menu)
 
         val runRV = binding.recyclerView
-        adapter = RunAdapter(this, runs, this)
+        adapter = RunAdapter(this, runs, this, progressRepository)
         runRV.adapter = adapter
         runRV.layoutManager = LinearLayoutManager(this)
 
@@ -75,6 +79,12 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
         binding.materialToolbar.menu.findItem(R.id.vibrate).isChecked = vibrate
         binding.materialToolbar.menu.findItem(R.id.sound).isChecked = sound
         binding.materialToolbar.menu.findItem(R.id.tts).isChecked = tts
+
+        // Setup progress header
+        updateProgressHeader()
+
+        // Setup quick resume FAB
+        setupQuickResumeFAB()
 
         launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             handleActivityResult(it.resultCode, it.data)
@@ -102,6 +112,37 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
     }
 
     /**
+     * Update the progress summary header
+     */
+    private fun updateProgressHeader() {
+        val summary = progressRepository.getProgressSummary(runs)
+
+        binding.root.findViewById<android.widget.TextView>(R.id.tvCurrentWeekDay)?.text =
+            "Week ${summary.currentWeek} Day ${summary.currentDay}"
+
+        binding.root.findViewById<android.widget.TextView>(R.id.tvProgressStats)?.text =
+            "${summary.totalCompleted}/${summary.totalRuns} runs completed"
+
+        val lastRunText = if (summary.lastRunDate != null) {
+            val progress = se.wmuth.openc25k.data.model.RunProgress(lastCompletedDate = summary.lastRunDate)
+            "Last run: ${progress.getLastCompletedText()}"
+        } else {
+            "Last run: Never"
+        }
+        binding.root.findViewById<android.widget.TextView>(R.id.tvLastRun)?.text = lastRunText
+    }
+
+    /**
+     * Setup quick resume FAB to start recommended run
+     */
+    private fun setupQuickResumeFAB() {
+        binding.fabQuickResume.setOnClickListener {
+            val recommendedIndex = progressRepository.getNextRecommendedRun(runs)
+            onRunItemClick(recommendedIndex)
+        }
+    }
+
+    /**
      * Handle the result of the TrackActivity
      *
      * @param resultCode if RESULT_OK, run was finished
@@ -109,10 +150,26 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
      */
     private fun handleActivityResult(resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_OK && data != null) {
-            runs[data.getIntExtra("id", 0)].isComplete = true
-            adapter.notifyItemChanged(data.getIntExtra("id", 0))
+            val runIndex = data.getIntExtra("id", 0)
+
+            // Record completion in progress repository
+            progressRepository.recordCompletion(runIndex)
+
+            // Keep old isComplete flag for backward compatibility
+            runs[runIndex].isComplete = true
             handler.setRuns(runs)
+
+            // Refresh UI
+            adapter.notifyDataSetChanged()
+            updateProgressHeader()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Refresh UI when returning to activity
+        adapter.notifyDataSetChanged()
+        updateProgressHeader()
     }
 
     override fun createVolumeDialog() {

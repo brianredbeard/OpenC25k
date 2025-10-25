@@ -9,9 +9,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import se.wmuth.openc25k.R
 import se.wmuth.openc25k.data.Run
+import se.wmuth.openc25k.data.repository.ProgressRepository
 
 /**
  * Used to adapt an array of runs for display in a RecyclerView
@@ -21,7 +23,12 @@ import se.wmuth.openc25k.data.Run
  * @param toListen a listener which listens to click events on the adapter and it's items
  * @constructor returns the adapter based on the input variables
  */
-class RunAdapter(parentContext: Context, runsArr: Array<Run>, toListen: RunAdapterClickListener) :
+class RunAdapter(
+    parentContext: Context,
+    runsArr: Array<Run>,
+    toListen: RunAdapterClickListener,
+    private val progressRepository: ProgressRepository
+) :
     RecyclerView.Adapter<RunAdapter.RunViewHolder>() {
     private val context: Context = parentContext
     private val listener: RunAdapterClickListener = toListen
@@ -52,12 +59,18 @@ class RunAdapter(parentContext: Context, runsArr: Array<Run>, toListen: RunAdapt
         View.OnClickListener, View.OnLongClickListener {
         val iw: ImageView
         val tw: TextView
+        val cardView: CardView
+        val tvNextBadge: TextView
+        val tvCompletionCount: TextView
 
         init {
             itemView.setOnClickListener(this)
             itemView.setOnLongClickListener(this)
             iw = itemView.findViewById(R.id.imageView)
             tw = itemView.findViewById(R.id.textView)
+            cardView = itemView.findViewById(R.id.cardView)
+            tvNextBadge = itemView.findViewById(R.id.tvNextBadge)
+            tvCompletionCount = itemView.findViewById(R.id.tvCompletionCount)
         }
 
         override fun onClick(p0: View?) {
@@ -103,6 +116,26 @@ class RunAdapter(parentContext: Context, runsArr: Array<Run>, toListen: RunAdapt
             }
 
             iw.setImageDrawable(img)
+
+            // Check if this is the recommended next run
+            val isRecommended = progressRepository.isRecommendedRun(position, runs)
+            tvNextBadge.visibility = if (isRecommended) android.view.View.VISIBLE else android.view.View.GONE
+
+            // Show completion count if run has been completed
+            val completionCount = progressRepository.getCompletionCount(position)
+            if (completionCount > 0) {
+                tvCompletionCount.text = "×$completionCount"
+                tvCompletionCount.visibility = android.view.View.VISIBLE
+            } else {
+                tvCompletionCount.visibility = android.view.View.GONE
+            }
+
+            // Highlight recommended run with subtle elevation change
+            if (isRecommended) {
+                cardView.cardElevation = 12f
+            } else {
+                cardView.cardElevation = 8f
+            }
         }
     }
 }
