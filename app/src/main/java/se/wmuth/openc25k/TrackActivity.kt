@@ -88,6 +88,9 @@ class TrackActivity : AppCompatActivity(), RunTimer.RunTimerListener {
             binding.twTimer.text = next.time.toString()
         }
 
+        // Announce the interval change with duration
+        announcer.announceIntervalWithDuration(next.title, next.time)
+
         if (next.title == getString(R.string.walk)) {
             if (sound) {
                 beeper.beep()
