@@ -14,9 +14,11 @@ import se.wmuth.openc25k.audio.AudioFocusManager
 import se.wmuth.openc25k.both.Beeper
 import se.wmuth.openc25k.data.Run
 import se.wmuth.openc25k.databinding.ActivityMainBinding
+import se.wmuth.openc25k.data.model.SoundType
 import se.wmuth.openc25k.main.DataHandler
 import se.wmuth.openc25k.main.RunAdapter
 import se.wmuth.openc25k.main.SettingsMenu
+import se.wmuth.openc25k.main.SoundSelectionDialog
 import se.wmuth.openc25k.main.VolumeDialog
 
 // Get the datastore for the app
@@ -26,11 +28,13 @@ val Context.datastore: DataStore<Preferences> by preferencesDataStore(name = "se
  * The main activity, ties together everything on the apps 'home' page
  */
 class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
-    SettingsMenu.SettingsMenuListener, VolumeDialog.VolumeDialogListener {
+    SettingsMenu.SettingsMenuListener, VolumeDialog.VolumeDialogListener,
+    SoundSelectionDialog.SoundSelectionDialogListener {
     private lateinit var audioFocusManager: AudioFocusManager
     private lateinit var menu: SettingsMenu
     private lateinit var runs: Array<Run>
     private lateinit var volDialog: VolumeDialog
+    private lateinit var soundSelectionDialog: SoundSelectionDialog
     private lateinit var handler: DataHandler
     private lateinit var adapter: RunAdapter
     private lateinit var launcher: ActivityResultLauncher<Intent>
@@ -38,12 +42,14 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
     private var sound: Boolean = true
     private var vibrate: Boolean = true
     private var volume: Float = 0.5f
+    private var soundType: SoundType = SoundType.BEEP
 
     override fun onCreate(savedInstanceState: Bundle?) {
         handler = DataHandler(this, datastore)
         sound = handler.getSound()
         vibrate = handler.getVibrate()
         volume = handler.getVolume()
+        soundType = handler.getSoundType()
         runs = handler.getRuns()
 
         audioFocusManager = AudioFocusManager(this)
@@ -53,6 +59,7 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
         setContentView(binding.root)
 
         volDialog = VolumeDialog(this, this, layoutInflater)
+        soundSelectionDialog = SoundSelectionDialog(this, this)
         menu = SettingsMenu(this, binding.materialToolbar.menu)
 
         val runRV = binding.recyclerView
@@ -77,6 +84,7 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
         intent.putExtra("sound", sound)
         intent.putExtra("vibrate", vibrate)
         intent.putExtra("volume", volume)
+        intent.putExtra("soundType", soundType.name)
         launcher.launch(intent)
     }
 
@@ -105,6 +113,10 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
         volDialog.createAlertDialog(volume)
     }
 
+    override fun createSoundSelectionDialog() {
+        soundSelectionDialog.createAlertDialog(soundType)
+    }
+
     override fun shouldMakeSound(): Boolean {
         return sound
     }
@@ -115,7 +127,7 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
 
     override fun testVolume() {
         if (beeper == null) {
-            beeper = Beeper(applicationContext, volume, audioFocusManager)
+            beeper = Beeper(applicationContext, volume, audioFocusManager, soundType)
         }
         if (sound) {
             beeper?.beep()
@@ -135,5 +147,13 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
     override fun setVolume(nV: Float) {
         volume = nV
         handler.setVolume(volume)
+    }
+
+    override fun setSoundType(soundType: SoundType) {
+        this.soundType = soundType
+        handler.setSoundType(soundType)
+        // Recreate beeper with new sound type if it exists
+        beeper?.release()
+        beeper = null
     }
 }

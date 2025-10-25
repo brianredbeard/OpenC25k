@@ -9,6 +9,7 @@ import se.wmuth.openc25k.audio.AudioFocusManager
 import se.wmuth.openc25k.both.Beeper
 import se.wmuth.openc25k.data.Interval
 import se.wmuth.openc25k.data.Run
+import se.wmuth.openc25k.data.model.SoundType
 import se.wmuth.openc25k.databinding.ActivityTrackBinding
 import se.wmuth.openc25k.track.RunAnnouncer
 import se.wmuth.openc25k.track.RunTimer
@@ -23,6 +24,7 @@ import timber.log.Timber
  *      "sound" -> if sound is enabled: Boolean
  *      "vibrate" -> if vibration is enabled: Boolean
  *      "volume" -> what the volume is: Float
+ *      "soundType" -> which sound to play: String (SoundType.name)
  */
 class TrackActivity : AppCompatActivity(), RunTimer.RunTimerListener {
     private lateinit var audioFocusManager: AudioFocusManager
@@ -54,7 +56,12 @@ class TrackActivity : AppCompatActivity(), RunTimer.RunTimerListener {
         vibrate = intent.getBooleanExtra("vibrate", true)
 
         audioFocusManager = AudioFocusManager(this)
-        beeper = Beeper(this, intent.getFloatExtra("volume", 0.5f), audioFocusManager)
+
+        // Get sound type from intent, default to BEEP if not provided
+        val soundTypeName = intent.getStringExtra("soundType") ?: SoundType.BEEP.name
+        val soundType = SoundType.fromName(soundTypeName)
+
+        beeper = Beeper(this, intent.getFloatExtra("volume", 0.5f), audioFocusManager, soundType)
         announcer = RunAnnouncer(this, audioFocusManager)
         shaker = Shaker(getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager)
         timer = RunTimer(run.intervals, this)
