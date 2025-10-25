@@ -105,10 +105,18 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
     }
 
     override fun onRunItemLongClick(position: Int) {
-        // Run held, toggle isComplete
+        // Run held, toggle isComplete and increment progress
+        val wasComplete = runs[position].isComplete
         runs[position].isComplete = !runs[position].isComplete
-        adapter.notifyItemChanged(position)
+
+        // If marking as complete, record it in progress tracking
+        if (!wasComplete && runs[position].isComplete) {
+            progressRepository.recordCompletion(position)
+        }
+
         handler.setRuns(runs)
+        adapter.notifyDataSetChanged()
+        updateProgressHeader()
     }
 
     /**
