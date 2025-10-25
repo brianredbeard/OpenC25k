@@ -1,5 +1,6 @@
 package se.wmuth.openc25k
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -7,6 +8,7 @@ import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
 import android.view.View
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +21,7 @@ import se.wmuth.openc25k.both.Beeper
 import se.wmuth.openc25k.data.Interval
 import se.wmuth.openc25k.data.Run
 import se.wmuth.openc25k.databinding.ActivityMainBinding
+import se.wmuth.openc25k.data.model.RunProgress
 import se.wmuth.openc25k.data.model.SoundType
 import se.wmuth.openc25k.data.repository.ProgressRepository
 import se.wmuth.openc25k.main.DataHandler
@@ -155,19 +158,19 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
     private fun updateProgressHeader() {
         val summary = progressRepository.getProgressSummary(runs)
 
-        binding.root.findViewById<android.widget.TextView>(R.id.tvCurrentWeekDay)?.text =
+        binding.root.findViewById<TextView>(R.id.tvCurrentWeekDay)?.text =
             getString(R.string.progress_week_day, summary.currentWeek, summary.currentDay)
 
-        binding.root.findViewById<android.widget.TextView>(R.id.tvProgressStats)?.text =
+        binding.root.findViewById<TextView>(R.id.tvProgressStats)?.text =
             getString(R.string.progress_runs_completed, summary.totalCompleted, summary.totalRuns)
 
         val lastRunText = if (summary.lastRunDate != null) {
-            val progress = se.wmuth.openc25k.data.model.RunProgress(lastCompletedDate = summary.lastRunDate)
+            val progress = RunProgress(lastCompletedDate = summary.lastRunDate)
             getString(R.string.progress_last_run_with_date, progress.getLastCompletedText())
         } else {
             getString(R.string.progress_last_run_never)
         }
-        binding.root.findViewById<android.widget.TextView>(R.id.tvLastRun)?.text = lastRunText
+        binding.root.findViewById<TextView>(R.id.tvLastRun)?.text = lastRunText
     }
 
     /**
@@ -208,7 +211,7 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
 
         val run = service.getRun()
         if (run != null) {
-            binding.root.findViewById<android.widget.TextView>(R.id.tvBannerRunName)?.text = run.name
+            binding.root.findViewById<TextView>(R.id.tvBannerRunName)?.text = run.name
         }
 
         val interval = service.getCurrentInterval()
@@ -216,11 +219,11 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
         val totalRemaining = service.getTotalRemaining()
 
         if (interval != null) {
-            binding.root.findViewById<android.widget.TextView>(R.id.tvBannerInterval)?.text =
+            binding.root.findViewById<TextView>(R.id.tvBannerInterval)?.text =
                 getString(R.string.banner_interval_remaining, interval.title, intervalRemaining)
         }
 
-        binding.root.findViewById<android.widget.TextView>(R.id.tvBannerTotalRemaining)?.text =
+        binding.root.findViewById<TextView>(R.id.tvBannerTotalRemaining)?.text =
             getString(R.string.banner_total_remaining, totalRemaining)
     }
 
@@ -267,9 +270,12 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onResume() {
         super.onResume()
-        // Refresh UI when returning to activity
+        // Refresh UI when returning to activity - we don't know which items changed
+        // notifyDataSetChanged() is appropriate here as we could have multiple changes
+        // from background service or settings modifications
         adapter.notifyDataSetChanged()
         updateProgressHeader()
 
@@ -291,12 +297,12 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
 
     override fun onTick(intervalRemaining: String, totalRemaining: String) {
         runOnUiThread {
-            binding.root.findViewById<android.widget.TextView>(R.id.tvBannerTotalRemaining)?.text =
+            binding.root.findViewById<TextView>(R.id.tvBannerTotalRemaining)?.text =
                 getString(R.string.banner_total_remaining, totalRemaining)
 
             val interval = trackingService?.getCurrentInterval()
             if (interval != null) {
-                binding.root.findViewById<android.widget.TextView>(R.id.tvBannerInterval)?.text =
+                binding.root.findViewById<TextView>(R.id.tvBannerInterval)?.text =
                     getString(R.string.banner_interval_remaining, interval.title, intervalRemaining)
             }
         }
