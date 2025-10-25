@@ -41,6 +41,12 @@ class SettingsMenu(p: SettingsMenuListener, s: Menu) : Toolbar.OnMenuItemClickLi
         fun shouldVibrate(): Boolean
 
         /**
+         * Returns the current TTS setting
+         * @return true if enabled, false if disabled
+         */
+        fun shouldUseTTS(): Boolean
+
+        /**
          * Plays a beep to allow the user to test their volume setting
          */
         fun testVolume()
@@ -54,6 +60,11 @@ class SettingsMenu(p: SettingsMenuListener, s: Menu) : Toolbar.OnMenuItemClickLi
          * Toggles the vibration setting, true if was false and vice versa
          */
         fun toggleVibration()
+
+        /**
+         * Toggles the TTS setting, true if was false and vice versa
+         */
+        fun toggleTTS()
     }
 
     override fun onMenuItemClick(p0: MenuItem?): Boolean {
@@ -69,6 +80,11 @@ class SettingsMenu(p: SettingsMenuListener, s: Menu) : Toolbar.OnMenuItemClickLi
             R.id.sound -> {
                 parent.toggleSound()
                 self.findItem(R.id.sound).isChecked = parent.shouldMakeSound()
+            }
+
+            R.id.tts -> {
+                parent.toggleTTS()
+                self.findItem(R.id.tts).isChecked = parent.shouldUseTTS()
             }
 
             R.id.setVol -> parent.createVolumeDialog()
