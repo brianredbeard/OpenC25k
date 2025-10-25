@@ -10,6 +10,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.recyclerview.widget.LinearLayoutManager
+import se.wmuth.openc25k.audio.AudioFocusManager
 import se.wmuth.openc25k.both.Beeper
 import se.wmuth.openc25k.data.Run
 import se.wmuth.openc25k.databinding.ActivityMainBinding
@@ -26,12 +27,14 @@ val Context.datastore: DataStore<Preferences> by preferencesDataStore(name = "se
  */
 class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
     SettingsMenu.SettingsMenuListener, VolumeDialog.VolumeDialogListener {
+    private lateinit var audioFocusManager: AudioFocusManager
     private lateinit var menu: SettingsMenu
     private lateinit var runs: Array<Run>
     private lateinit var volDialog: VolumeDialog
     private lateinit var handler: DataHandler
     private lateinit var adapter: RunAdapter
     private lateinit var launcher: ActivityResultLauncher<Intent>
+    private var beeper: Beeper? = null
     private var sound: Boolean = true
     private var vibrate: Boolean = true
     private var volume: Float = 0.5f
@@ -42,6 +45,8 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
         vibrate = handler.getVibrate()
         volume = handler.getVolume()
         runs = handler.getRuns()
+
+        audioFocusManager = AudioFocusManager(this)
 
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
@@ -109,9 +114,11 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
     }
 
     override fun testVolume() {
-        val beeper = Beeper(applicationContext, volume)
+        if (beeper == null) {
+            beeper = Beeper(applicationContext, volume, audioFocusManager)
+        }
         if (sound) {
-            beeper.beep()
+            beeper?.beep()
         }
     }
 
