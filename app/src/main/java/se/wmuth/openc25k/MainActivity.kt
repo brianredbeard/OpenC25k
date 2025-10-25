@@ -1,8 +1,12 @@
 package se.wmuth.openc25k
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
+import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +16,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.recyclerview.widget.LinearLayoutManager
 import se.wmuth.openc25k.audio.AudioFocusManager
 import se.wmuth.openc25k.both.Beeper
+import se.wmuth.openc25k.data.Interval
 import se.wmuth.openc25k.data.Run
 import se.wmuth.openc25k.databinding.ActivityMainBinding
 import se.wmuth.openc25k.data.model.SoundType
@@ -21,6 +26,7 @@ import se.wmuth.openc25k.main.RunAdapter
 import se.wmuth.openc25k.main.SettingsMenu
 import se.wmuth.openc25k.main.SoundSelectionDialog
 import se.wmuth.openc25k.main.VolumeDialog
+import se.wmuth.openc25k.service.RunTrackingService
 import se.wmuth.openc25k.track.RunAnnouncer
 
 // Get the datastore for the app
@@ -31,7 +37,7 @@ val Context.datastore: DataStore<Preferences> by preferencesDataStore(name = "se
  */
 class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
     SettingsMenu.SettingsMenuListener, VolumeDialog.VolumeDialogListener,
-    SoundSelectionDialog.SoundSelectionDialogListener {
+    SoundSelectionDialog.SoundSelectionDialogListener, RunTrackingService.RunStateListener {
     private lateinit var audioFocusManager: AudioFocusManager
     private lateinit var menu: SettingsMenu
     private lateinit var runs: Array<Run>
@@ -49,6 +55,27 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
     private var tts: Boolean = true
     private var volume: Float = 0.5f
     private var soundType: SoundType = SoundType.BEEP
+
+    // Service binding for active run tracking
+    private var trackingService: RunTrackingService? = null
+    private var boundToService = false
+
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
+            val serviceBinder = binder as RunTrackingService.RunTrackingBinder
+            trackingService = serviceBinder.getService()
+            boundToService = true
+            trackingService?.addStateListener(this@MainActivity)
+            updateActiveRunBanner()
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            trackingService?.removeStateListener(this@MainActivity)
+            trackingService = null
+            boundToService = false
+            hideActiveRunBanner()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         handler = DataHandler(this, datastore)
@@ -85,6 +112,9 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
 
         // Setup quick resume FAB
         setupQuickResumeFAB()
+
+        // Setup active run banner
+        setupActiveRunBanner()
 
         launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             handleActivityResult(it.resultCode, it.data)
@@ -151,6 +181,62 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
     }
 
     /**
+     * Setup active run banner click to return to TrackActivity
+     */
+    private fun setupActiveRunBanner() {
+        binding.root.findViewById<View>(R.id.activeRunBanner)?.setOnClickListener {
+            // Open TrackActivity to return to active run
+            val intent = Intent(this, TrackActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
+        }
+    }
+
+    /**
+     * Show and update the active run banner with current service state
+     */
+    private fun updateActiveRunBanner() {
+        val service = trackingService ?: return
+
+        binding.root.findViewById<View>(R.id.activeRunBanner)?.visibility = View.VISIBLE
+
+        val run = service.getRun()
+        binding.root.findViewById<android.widget.TextView>(R.id.tvBannerRunName)?.text = run.name
+
+        val interval = service.getCurrentInterval()
+        val intervalRemaining = service.getIntervalRemaining()
+        val totalRemaining = service.getTotalRemaining()
+
+        if (interval != null) {
+            binding.root.findViewById<android.widget.TextView>(R.id.tvBannerInterval)?.text =
+                "${interval.title} • $intervalRemaining remaining"
+        }
+
+        binding.root.findViewById<android.widget.TextView>(R.id.tvBannerTotalRemaining)?.text =
+            "Total: $totalRemaining"
+    }
+
+    /**
+     * Hide the active run banner
+     */
+    private fun hideActiveRunBanner() {
+        binding.root.findViewById<View>(R.id.activeRunBanner)?.visibility = View.GONE
+    }
+
+    /**
+     * Try to bind to RunTrackingService if it's running
+     */
+    private fun tryBindToService() {
+        val intent = Intent(this, RunTrackingService::class.java)
+        try {
+            bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+        } catch (e: Exception) {
+            // Service not running, that's okay
+            hideActiveRunBanner()
+        }
+    }
+
+    /**
      * Handle the result of the TrackActivity
      *
      * @param resultCode if RESULT_OK, run was finished
@@ -178,6 +264,54 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
         // Refresh UI when returning to activity
         adapter.notifyDataSetChanged()
         updateProgressHeader()
+
+        // Try to bind to service if it's running
+        tryBindToService()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Unbind from service when leaving activity
+        if (boundToService) {
+            trackingService?.removeStateListener(this)
+            unbindService(serviceConnection)
+            boundToService = false
+        }
+    }
+
+    // RunTrackingService.RunStateListener implementation
+
+    override fun onTick(intervalRemaining: String, totalRemaining: String) {
+        runOnUiThread {
+            binding.root.findViewById<android.widget.TextView>(R.id.tvBannerTotalRemaining)?.text =
+                "Total: $totalRemaining"
+
+            val interval = trackingService?.getCurrentInterval()
+            if (interval != null) {
+                binding.root.findViewById<android.widget.TextView>(R.id.tvBannerInterval)?.text =
+                    "${interval.title} • $intervalRemaining remaining"
+            }
+        }
+    }
+
+    override fun onIntervalChange(interval: Interval) {
+        runOnUiThread {
+            updateActiveRunBanner()
+        }
+    }
+
+    override fun onHalfway() {
+        // No special handling needed in MainActivity
+    }
+
+    override fun onRunComplete() {
+        runOnUiThread {
+            hideActiveRunBanner()
+        }
+    }
+
+    override fun onRunStateChanged(isRunning: Boolean) {
+        // No special handling needed in MainActivity
     }
 
     override fun createVolumeDialog() {
