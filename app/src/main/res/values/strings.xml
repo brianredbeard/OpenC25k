@@ -24,6 +24,17 @@
     <string name="testVolume">Test Volume</string>
     <string name="vibrate">Vibrate</string>
     <string name="checkbox">Checkbox</string>
+    <string name="soundSelection">Sound Selection</string>
+
+    <!--Sound Types-->
+    <string name="sound_beep">Beep</string>
+    <string name="sound_bell_1">Bell 1</string>
+    <string name="sound_bell_2">Bell 2</string>
+    <string name="sound_chime_1">Chime 1</string>
+    <string name="sound_chime_2">Chime 2</string>
+    <string name="sound_whistle_1">Whistle 1</string>
+    <string name="sound_whistle_2">Whistle 2</string>
+    <string name="sound_none">Silent</string>
 
     <!--Accessibility-->
     <string name="halfway_announcement">You\'re halfway there! Keep it up!</string>

@@ -17,6 +17,18 @@
     <string name="testVolume">Testa volym</string>
     <string name="vibrate">Vibrera</string>
     <string name="checkbox">Kryssruta</string>
+    <string name="soundSelection">Ljudval</string>
+
+    <!--Sound Types-->
+    <string name="sound_beep">Pip</string>
+    <string name="sound_bell_1">Klocka 1</string>
+    <string name="sound_bell_2">Klocka 2</string>
+    <string name="sound_chime_1">Klocka 1</string>
+    <string name="sound_chime_2">Klocka 2</string>
+    <string name="sound_whistle_1">Vissla 1</string>
+    <string name="sound_whistle_2">Vissla 2</string>
+    <string name="sound_none">Tyst</string>
+
     <string name="halfway_announcement">Du är halvvägs! Fortsätt!</string>
     <string name="w1d1">Snabb uppvärmningspromenad på fem minuter. Sedan, alternera 60 sekunder av jogging och 90 sekunder av gående i sammanlagt 20 minuter.</string>
     <string name="w1d2">Snabb uppvärmningspromenad på fem minuter. Sedan, alternera 60 sekunder av jogging och 90 sekunder av gående i sammanlagt 20 minuter.</string>
