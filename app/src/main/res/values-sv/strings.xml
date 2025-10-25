@@ -21,6 +21,16 @@
     <string name="soundSelection">Ljudval</string>
     <string name="tts_test_message">Testar röstmeddelanden</string>
 
+    <!--Progress Header-->
+    <string name="progress_week_day">Vecka %1$d Dag %2$d</string>
+    <string name="progress_runs_completed">%1$d/%2$d genomförda körningar</string>
+    <string name="progress_last_run_with_date">Senaste körning: %1$s</string>
+    <string name="progress_last_run_never">Senaste körning: Aldrig</string>
+
+    <!--Active Run Banner-->
+    <string name="banner_interval_remaining">%1$s • %2$s återstår</string>
+    <string name="banner_total_remaining">Totalt: %1$s</string>
+
     <!--Sound Types-->
     <string name="sound_beep">Pip</string>
     <string name="sound_bell_1">Klocka 1</string>

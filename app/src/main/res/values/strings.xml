@@ -29,6 +29,16 @@
     <string name="soundSelection">Sound Selection</string>
     <string name="tts_test_message">Testing voice announcements</string>
 
+    <!--Progress Header-->
+    <string name="progress_week_day">Week %1$d Day %2$d</string>
+    <string name="progress_runs_completed">%1$d/%2$d runs completed</string>
+    <string name="progress_last_run_with_date">Last run: %1$s</string>
+    <string name="progress_last_run_never">Last run: Never</string>
+
+    <!--Active Run Banner-->
+    <string name="banner_interval_remaining">%1$s • %2$s remaining</string>
+    <string name="banner_total_remaining">Total: %1$s</string>
+
     <!--Sound Types-->
     <string name="sound_beep">Beep</string>
     <string name="sound_bell_1">Bell 1</string>

@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
         }
 
         handler.setRuns(runs)
-        adapter.notifyDataSetChanged()
+        adapter.notifyItemChanged(position)
         updateProgressHeader()
     }
 
@@ -156,16 +156,16 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
         val summary = progressRepository.getProgressSummary(runs)
 
         binding.root.findViewById<android.widget.TextView>(R.id.tvCurrentWeekDay)?.text =
-            "Week ${summary.currentWeek} Day ${summary.currentDay}"
+            getString(R.string.progress_week_day, summary.currentWeek, summary.currentDay)
 
         binding.root.findViewById<android.widget.TextView>(R.id.tvProgressStats)?.text =
-            "${summary.totalCompleted}/${summary.totalRuns} runs completed"
+            getString(R.string.progress_runs_completed, summary.totalCompleted, summary.totalRuns)
 
         val lastRunText = if (summary.lastRunDate != null) {
             val progress = se.wmuth.openc25k.data.model.RunProgress(lastCompletedDate = summary.lastRunDate)
-            "Last run: ${progress.getLastCompletedText()}"
+            getString(R.string.progress_last_run_with_date, progress.getLastCompletedText())
         } else {
-            "Last run: Never"
+            getString(R.string.progress_last_run_never)
         }
         binding.root.findViewById<android.widget.TextView>(R.id.tvLastRun)?.text = lastRunText
     }
@@ -217,11 +217,11 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
 
         if (interval != null) {
             binding.root.findViewById<android.widget.TextView>(R.id.tvBannerInterval)?.text =
-                "${interval.title} • $intervalRemaining remaining"
+                getString(R.string.banner_interval_remaining, interval.title, intervalRemaining)
         }
 
         binding.root.findViewById<android.widget.TextView>(R.id.tvBannerTotalRemaining)?.text =
-            "Total: $totalRemaining"
+            getString(R.string.banner_total_remaining, totalRemaining)
     }
 
     /**
@@ -238,7 +238,7 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
         val intent = Intent(this, RunTrackingService::class.java)
         try {
             bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // Service not running, that's okay
             hideActiveRunBanner()
         }
@@ -262,7 +262,7 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
             handler.setRuns(runs)
 
             // Refresh UI
-            adapter.notifyDataSetChanged()
+            adapter.notifyItemChanged(runIndex)
             updateProgressHeader()
         }
     }
@@ -292,12 +292,12 @@ class MainActivity : AppCompatActivity(), RunAdapter.RunAdapterClickListener,
     override fun onTick(intervalRemaining: String, totalRemaining: String) {
         runOnUiThread {
             binding.root.findViewById<android.widget.TextView>(R.id.tvBannerTotalRemaining)?.text =
-                "Total: $totalRemaining"
+                getString(R.string.banner_total_remaining, totalRemaining)
 
             val interval = trackingService?.getCurrentInterval()
             if (interval != null) {
                 binding.root.findViewById<android.widget.TextView>(R.id.tvBannerInterval)?.text =
-                    "${interval.title} • $intervalRemaining remaining"
+                    getString(R.string.banner_interval_remaining, interval.title, intervalRemaining)
             }
         }
     }
