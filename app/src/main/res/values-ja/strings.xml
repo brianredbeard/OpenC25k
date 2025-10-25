@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">OpenC25k</string>
+    <string name="week">週</string>
+    <string name="day">日</string>
+    <string name="setVol">音量を設定</string>
+    <string name="zero">0</string>
+    <string name="warmup">ウォームアップ💪</string>
+    <string name="walk">ウォーキング🚶</string>
+    <string name="jog">ジョギング🏃💨</string>
+    <string name="runComplete">🏁やりました！🥳</string>
+    <string name="run_complete">ラン完了！</string>
+    <string name="btnStartStr">スタート</string>
+    <string name="btnSkipStr">スキップ</string>
+    <string name="btnPauseStr">一時停止</string>
+    <string name="timeRemain">残り時間合計：</string>
+    <string name="sound">サウンド</string>
+    <string name="testVolume">音量テスト</string>
+    <string name="vibrate">振動</string>
+    <string name="tts">音声アナウンス</string>
+    <string name="checkbox">チェックボックス</string>
+    <string name="soundSelection">サウンド選択</string>
+    <string name="tts_test_message">音声アナウンスのテスト</string>
+    <string name="progress_week_day">第%1$d週 第%2$d日</string>
+    <string name="progress_runs_completed">%1$d/%2$d ラン完了</string>
+    <string name="progress_last_run_with_date">前回のラン：%1$s</string>
+    <string name="progress_last_run_never">前回のラン：なし</string>
+    <string name="banner_interval_remaining">%1$s • 残り%2$s</string>
+    <string name="banner_total_remaining">合計：%1$s</string>
+    <string name="sound_beep">ビープ音</string>
+    <string name="sound_bell_1">ベル 1</string>
+    <string name="sound_bell_2">ベル 2</string>
+    <string name="sound_chime_1">チャイム 1</string>
+    <string name="sound_chime_2">チャイム 2</string>
+    <string name="sound_whistle_1">ホイッスル 1</string>
+    <string name="sound_whistle_2">ホイッスル 2</string>
+    <string name="sound_none">サイレント</string>
+    <string name="halfway_announcement">折り返し地点です！この調子で！</string>
+    <string name="w1d1" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後、60秒のジョギングと90秒のウォーキングを合計20分間交互に繰り返します。</string>
+    <string name="w1d2" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後、60秒のジョギングと90秒のウォーキングを合計20分間交互に繰り返します。</string>
+    <string name="w1d3" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後、60秒のジョギングと90秒のウォーキングを合計20分間交互に繰り返します。</string>
+    <string name="w2d1" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後、90秒のジョギングと2分間のウォーキングを合計20分間交互に繰り返します。</string>
+    <string name="w2d2" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後、90秒のジョギングと2分間のウォーキングを合計20分間交互に繰り返します。</string>
+    <string name="w2d3" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後、90秒のジョギングと2分間のウォーキングを合計20分間交互に繰り返します。</string>
+    <string name="w3d1" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後、次の動作を2回繰り返します：\n\n90秒ジョギング\n\n90秒ウォーキング\n\n3分ジョギング\n\n3分ウォーキング</string>
+    <string name="w3d2" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後、次の動作を2回繰り返します：\n\n90秒ジョギング\n\n90秒ウォーキング\n\n3分ジョギング\n\n3分ウォーキング</string>
+    <string name="w3d3" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後、次の動作を2回繰り返します：\n\n90秒ジョギング\n\n90秒ウォーキング\n\n3分ジョギング\n\n3分ウォーキング</string>
+    <string name="w4d1" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後：\n\n3分ジョギング\n\n90秒ウォーキング\n\n5分ジョギング\n\n2.5分ウォーキング\n\n3分ジョギング\n\n90秒ウォーキング\n\n5分ジョギング</string>
+    <string name="w4d2" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後：\n\n3分ジョギング\n\n90秒ウォーキング\n\n5分ジョギング\n\n2.5分ウォーキング\n\n3分ジョギング\n\n90秒ウォーキング\n\n5分ジョギング</string>
+    <string name="w4d3" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後：3分ジョギング  90秒ウォーキング  5分ジョギング  2.5分ウォーキング  3分ジョギング  90秒ウォーキング  5分ジョギング</string>
+    <string name="w5d1">5分間の早歩きでウォームアップ。その後：\n\n5分ジョギング\n\n3分ウォーキング\n\n5分ジョギング\n\n3分ウォーキング\n\n5分ジョギング</string>
+    <string name="w5d2">5分間の早歩きでウォームアップ。その後：\n\n8分ジョギング\n\n5分ウォーキング\n\n8分ジョギング</string>
+    <string name="w5d3">5分間の早歩きでウォームアップ。その後、歩かずに20分間ジョギングします。</string>
+    <string name="w6d1">5分間の早歩きでウォームアップ。その後：\n\n5分ジョギング\n\n3分ウォーキング\n\n8分ジョギング\n\n3分ウォーキング\n\n5分ジョギング</string>
+    <string name="w6d2">5分間の早歩きでウォームアップ。その後：\n\n10分ジョギング\n\n3分ウォーキング\n\n10分ジョギング</string>
+    <string name="w6d3">5分間の早歩きでウォームアップ。その後、歩かずに22分間ジョギングします。</string>
+    <string name="w7d1">5分間の早歩きでウォームアップ。その後、25分間ジョギングします</string>
+    <string name="w7d2" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後、25分間ジョギングします。</string>
+    <string name="w7d3" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後、25分間ジョギングします。</string>
+    <string name="w8d1" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後、28分間ジョギングします。</string>
+    <string name="w8d2" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後、28分間ジョギングします。</string>
+    <string name="w8d3" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後、28分間ジョギングします。</string>
+    <string name="w9d1" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後、30分間ジョギングします。</string>
+    <string name="w9d2" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後、30分間ジョギングします。</string>
+    <string name="w9d3" tools:ignore="DuplicateStrings">5分間の早歩きでウォームアップ。その後、30分間ジョギングします。</string>
+</resources>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--General-->
+
+    <!--Main activity-->
+    <string name="week">周</string>
+    <string name="day">天</string>
+
+    <!--Volume dialog-->
+    <string name="setVol">设置音量</string>
+    <string name="zero">0</string>
+
+    <!--Track activity-->
+    <string name="warmup">热身💪</string>
+    <string name="walk">步行🚶</string>
+    <string name="jog">慢跑🏃💨</string>
+    <string name="runComplete">🏁你做到了！🥳</string>
+    <string name="run_complete">跑步完成！</string>
+    <string name="btnStartStr">开始</string>
+    <string name="btnSkipStr">跳过</string>
+    <string name="btnPauseStr">暂停</string>
+    <string name="timeRemain">剩余总时间：</string>
+
+    <!--Menu-->
+    <string name="sound">声音</string>
+    <string name="testVolume">测试音量</string>
+    <string name="vibrate">振动</string>
+    <string name="tts">语音播报</string>
+    <string name="checkbox">复选框</string>
+    <string name="soundSelection">声音选择</string>
+    <string name="tts_test_message">测试语音播报</string>
+
+    <!--Progress Header-->
+    <string name="progress_week_day">第%1$d周 第%2$d天</string>
+    <string name="progress_runs_completed">已完成 %1$d/%2$d 次跑步</string>
+    <string name="progress_last_run_with_date">上次跑步：%1$s</string>
+    <string name="progress_last_run_never">上次跑步：从未</string>
+
+    <!--Active Run Banner-->
+    <string name="banner_interval_remaining">%1$s • 剩余 %2$s</string>
+    <string name="banner_total_remaining">总计：%1$s</string>
+
+    <!--Sound Types-->
+    <string name="sound_beep">哔哔声</string>
+    <string name="sound_bell_1">铃声 1</string>
+    <string name="sound_bell_2">铃声 2</string>
+    <string name="sound_chime_1">钟声 1</string>
+    <string name="sound_chime_2">钟声 2</string>
+    <string name="sound_whistle_1">哨声 1</string>
+    <string name="sound_whistle_2">哨声 2</string>
+    <string name="sound_none">静音</string>
+
+    <!--Accessibility-->
+    <string name="halfway_announcement">你已经完成一半了！继续加油！</string>
+
+    <!--Weeks, separated into a group of 3 per week-->
+    <string name="w1d1" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后交替进行60秒慢跑和90秒步行，总计20分钟。</string>
+    <string name="w1d2" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后交替进行60秒慢跑和90秒步行，总计20分钟。</string>
+    <string name="w1d3" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后交替进行60秒慢跑和90秒步行，总计20分钟。</string>
+
+    <string name="w2d1" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后交替进行90秒慢跑和2分钟步行，总计20分钟。</string>
+    <string name="w2d2" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后交替进行90秒慢跑和2分钟步行，总计20分钟。</string>
+    <string name="w2d3" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后交替进行90秒慢跑和2分钟步行，总计20分钟。</string>
+
+    <string name="w3d1" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后重复以下动作两次：\n\n慢跑90秒\n\n步行90秒\n\n慢跑3分钟\n\n步行3分钟</string>
+    <string name="w3d2" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后重复以下动作两次：\n\n慢跑90秒\n\n步行90秒\n\n慢跑3分钟\n\n步行3分钟</string>
+    <string name="w3d3" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后重复以下动作两次：\n\n慢跑90秒\n\n步行90秒\n\n慢跑3分钟\n\n步行3分钟</string>
+
+    <string name="w4d1" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后：\n\n慢跑3分钟\n\n步行90秒\n\n慢跑5分钟\n\n步行2.5分钟\n\n慢跑3分钟\n\n步行90秒\n\n慢跑5分钟</string>
+    <string name="w4d2" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后：\n\n慢跑3分钟\n\n步行90秒\n\n慢跑5分钟\n\n步行2.5分钟\n\n慢跑3分钟\n\n步行90秒\n\n慢跑5分钟</string>
+    <string name="w4d3" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后：慢跑3分钟  步行90秒  慢跑5分钟  步行2.5分钟  慢跑3分钟  步行90秒  慢跑5分钟</string>
+
+    <string name="w5d1">快速热身步行五分钟。然后：\n\n慢跑5分钟\n\n步行3分钟\n\n慢跑5分钟\n\n步行3分钟\n\n慢跑5分钟</string>
+    <string name="w5d2">快速热身步行五分钟。然后：\n\n慢跑8分钟\n\n步行5分钟\n\n慢跑8分钟</string>
+    <string name="w5d3">快速热身步行五分钟。然后，连续慢跑20分钟，不步行。</string>
+
+    <string name="w6d1">快速热身步行五分钟。然后：\n\n慢跑5分钟\n\n步行3分钟\n\n慢跑8分钟\n\n步行3分钟\n\n慢跑5分钟</string>
+    <string name="w6d2">快速热身步行五分钟。然后：\n\n慢跑10分钟\n\n步行3分钟\n\n慢跑10分钟</string>
+    <string name="w6d3">快速热身步行五分钟。然后，连续慢跑22分钟，不步行。</string>
+
+    <string name="w7d1">快速热身步行五分钟。然后，慢跑25分钟</string>
+    <string name="w7d2" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后，慢跑25分钟。</string>
+    <string name="w7d3" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后，慢跑25分钟。</string>
+
+    <string name="w8d1" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后，慢跑28分钟。</string>
+    <string name="w8d2" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后，慢跑28分钟。</string>
+    <string name="w8d3" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后，慢跑28分钟。</string>
+
+    <string name="w9d1" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后，慢跑30分钟。</string>
+    <string name="w9d2" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后，慢跑30分钟。</string>
+    <string name="w9d3" tools:ignore="DuplicateStrings">快速热身步行五分钟。然后，慢跑30分钟。</string>
+    <string name="app_name">OpenC25k</string>
+</resources>

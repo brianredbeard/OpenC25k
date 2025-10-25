@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">OpenC25k</string>
+    <string name="week">Woche</string>
+    <string name="day">Tag</string>
+    <string name="setVol">Lautstärke einstellen</string>
+    <string name="zero">0</string>
+    <string name="warmup">Aufwärmen💪</string>
+    <string name="walk">Gehen🚶</string>
+    <string name="jog">Joggen🏃💨</string>
+    <string name="runComplete">🏁Du hast es geschafft!🥳</string>
+    <string name="run_complete">Lauf abgeschlossen!</string>
+    <string name="btnStartStr">Start</string>
+    <string name="btnSkipStr">Überspringen</string>
+    <string name="btnPauseStr">Pause</string>
+    <string name="timeRemain">Gesamte Restzeit:</string>
+    <string name="sound">Ton</string>
+    <string name="testVolume">Lautstärke testen</string>
+    <string name="vibrate">Vibrieren</string>
+    <string name="tts">Sprachansagen</string>
+    <string name="checkbox">Kontrollkästchen</string>
+    <string name="soundSelection">Tonauswahl</string>
+    <string name="tts_test_message">Sprachansagen testen</string>
+    <string name="progress_week_day">Woche %1$d Tag %2$d</string>
+    <string name="progress_runs_completed">%1$d/%2$d Läufe abgeschlossen</string>
+    <string name="progress_last_run_with_date">Letzter Lauf: %1$s</string>
+    <string name="progress_last_run_never">Letzter Lauf: Nie</string>
+    <string name="banner_interval_remaining">%1$s • %2$s verbleibend</string>
+    <string name="banner_total_remaining">Gesamt: %1$s</string>
+    <string name="sound_beep">Piepen</string>
+    <string name="sound_bell_1">Glocke 1</string>
+    <string name="sound_bell_2">Glocke 2</string>
+    <string name="sound_chime_1">Gong 1</string>
+    <string name="sound_chime_2">Gong 2</string>
+    <string name="sound_whistle_1">Pfeife 1</string>
+    <string name="sound_whistle_2">Pfeife 2</string>
+    <string name="sound_none">Stumm</string>
+    <string name="halfway_announcement">Du bist auf halbem Weg! Weiter so!</string>
+    <string name="w1d1" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann abwechselnd 60 Sekunden Joggen und 90 Sekunden Gehen für insgesamt 20 Minuten.</string>
+    <string name="w1d2" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann abwechselnd 60 Sekunden Joggen und 90 Sekunden Gehen für insgesamt 20 Minuten.</string>
+    <string name="w1d3" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann abwechselnd 60 Sekunden Joggen und 90 Sekunden Gehen für insgesamt 20 Minuten.</string>
+    <string name="w2d1" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann abwechselnd 90 Sekunden Joggen und 2 Minuten Gehen für insgesamt 20 Minuten.</string>
+    <string name="w2d2" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann abwechselnd 90 Sekunden Joggen und 2 Minuten Gehen für insgesamt 20 Minuten.</string>
+    <string name="w2d3" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann abwechselnd 90 Sekunden Joggen und 2 Minuten Gehen für insgesamt 20 Minuten.</string>
+    <string name="w3d1" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann zwei Wiederholungen:\n\n90 Sekunden Joggen\n\n90 Sekunden Gehen\n\n3 Minuten Joggen\n\n3 Minuten Gehen</string>
+    <string name="w3d2" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann zwei Wiederholungen:\n\n90 Sekunden Joggen\n\n90 Sekunden Gehen\n\n3 Minuten Joggen\n\n3 Minuten Gehen</string>
+    <string name="w3d3" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann zwei Wiederholungen:\n\n90 Sekunden Joggen\n\n90 Sekunden Gehen\n\n3 Minuten Joggen\n\n3 Minuten Gehen</string>
+    <string name="w4d1" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann:\n\n3 Minuten Joggen\n\n90 Sekunden Gehen\n\n5 Minuten Joggen\n\n2½ Minuten Gehen\n\n3 Minuten Joggen\n\n90 Sekunden Gehen\n\n5 Minuten Joggen</string>
+    <string name="w4d2" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann:\n\n3 Minuten Joggen\n\n90 Sekunden Gehen\n\n5 Minuten Joggen\n\n2½ Minuten Gehen\n\n3 Minuten Joggen\n\n90 Sekunden Gehen\n\n5 Minuten Joggen</string>
+    <string name="w4d3" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann:  3 Minuten Joggen  90 Sekunden Gehen  5 Minuten Joggen  2½ Minuten Gehen  3 Minuten Joggen  90 Sekunden Gehen  5 Minuten Joggen</string>
+    <string name="w5d1">Fünfminütiges zügiges Aufwärmgehen. Dann:\n\n5 Minuten Joggen\n\n3 Minuten Gehen\n\n5 Minuten Joggen\n\n3 Minuten Gehen\n\n5 Minuten Joggen</string>
+    <string name="w5d2">Fünfminütiges zügiges Aufwärmgehen. Dann:\n\n8 Minuten Joggen\n\n5 Minuten Gehen\n\n8 Minuten Joggen</string>
+    <string name="w5d3">Fünfminütiges zügiges Aufwärmgehen. Dann 20 Minuten ohne Gehpausen joggen.</string>
+    <string name="w6d1">Fünfminütiges zügiges Aufwärmgehen. Dann:\n\n5 Minuten Joggen\n\n3 Minuten Gehen\n\n8 Minuten Joggen\n\n3 Minuten Gehen\n\n5 Minuten Joggen</string>
+    <string name="w6d2">Fünfminütiges zügiges Aufwärmgehen. Dann:\n\n10 Minuten Joggen\n\n3 Minuten Gehen\n\n10 Minuten Joggen</string>
+    <string name="w6d3">Fünfminütiges zügiges Aufwärmgehen. Dann 22 Minuten ohne Gehpausen joggen.</string>
+    <string name="w7d1">Fünfminütiges zügiges Aufwärmgehen. Dann 25 Minuten joggen</string>
+    <string name="w7d2" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann 25 Minuten joggen.</string>
+    <string name="w7d3" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann 25 Minuten joggen.</string>
+    <string name="w8d1" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann 28 Minuten joggen.</string>
+    <string name="w8d2" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann 28 Minuten joggen.</string>
+    <string name="w8d3" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann 28 Minuten joggen.</string>
+    <string name="w9d1" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann 30 Minuten joggen.</string>
+    <string name="w9d2" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann 30 Minuten joggen.</string>
+    <string name="w9d3" tools:ignore="DuplicateStrings">Fünfminütiges zügiges Aufwärmgehen. Dann 30 Minuten joggen.</string>
+</resources>

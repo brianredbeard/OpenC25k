@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--General-->
+
+    <!--Main activity-->
+    <string name="week">Semaine</string>
+    <string name="day">Jour</string>
+
+    <!--Volume dialog-->
+    <string name="setVol">Régler le volume</string>
+    <string name="zero">0</string>
+
+    <!--Track activity-->
+    <string name="warmup">Échauffement💪</string>
+    <string name="walk">Marcher🚶</string>
+    <string name="jog">Courir🏃💨</string>
+    <string name="runComplete">🏁Vous avez réussi !🥳</string>
+    <string name="run_complete">Course terminée !</string>
+    <string name="btnStartStr">Démarrer</string>
+    <string name="btnSkipStr">Passer</string>
+    <string name="btnPauseStr">Pause</string>
+    <string name="timeRemain">Temps total restant :</string>
+
+    <!--Menu-->
+    <string name="sound">Son</string>
+    <string name="testVolume">Tester le volume</string>
+    <string name="vibrate">Vibrer</string>
+    <string name="tts">Annonces vocales</string>
+    <string name="checkbox">Case à cocher</string>
+    <string name="soundSelection">Sélection du son</string>
+    <string name="tts_test_message">Test des annonces vocales</string>
+
+    <!--Progress Header-->
+    <string name="progress_week_day">Semaine %1$d Jour %2$d</string>
+    <string name="progress_runs_completed">%1$d/%2$d courses terminées</string>
+    <string name="progress_last_run_with_date">Dernière course : %1$s</string>
+    <string name="progress_last_run_never">Dernière course : Jamais</string>
+
+    <!--Active Run Banner-->
+    <string name="banner_interval_remaining">%1$s • %2$s restant</string>
+    <string name="banner_total_remaining">Total : %1$s</string>
+
+    <!--Sound Types-->
+    <string name="sound_beep">Bip</string>
+    <string name="sound_bell_1">Cloche 1</string>
+    <string name="sound_bell_2">Cloche 2</string>
+    <string name="sound_chime_1">Carillon 1</string>
+    <string name="sound_chime_2">Carillon 2</string>
+    <string name="sound_whistle_1">Sifflet 1</string>
+    <string name="sound_whistle_2">Sifflet 2</string>
+    <string name="sound_none">Silencieux</string>
+
+    <!--Accessibility-->
+    <string name="halfway_announcement">Vous êtes à mi-chemin ! Continuez !</string>
+
+    <!--Weeks, separated into a group of 3 per week-->
+    <string name="w1d1" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite, alternez 60 secondes de course et 90 secondes de marche pendant un total de 20 minutes.</string>
+    <string name="w1d2" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite, alternez 60 secondes de course et 90 secondes de marche pendant un total de 20 minutes.</string>
+    <string name="w1d3" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite, alternez 60 secondes de course et 90 secondes de marche pendant un total de 20 minutes.</string>
+
+    <string name="w2d1" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite, alternez 90 secondes de course et 2 minutes de marche pendant un total de 20 minutes.</string>
+    <string name="w2d2" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite, alternez 90 secondes de course et 2 minutes de marche pendant un total de 20 minutes.</string>
+    <string name="w2d3" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite, alternez 90 secondes de course et 2 minutes de marche pendant un total de 20 minutes.</string>
+
+    <string name="w3d1" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite, faites deux répétitions de ce qui suit :\n\nCourir 90 secondes\n\nMarcher 90 secondes\n\nCourir 3 minutes\n\nMarcher 3 minutes</string>
+    <string name="w3d2" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite, faites deux répétitions de ce qui suit :\n\nCourir 90 secondes\n\nMarcher 90 secondes\n\nCourir 3 minutes\n\nMarcher 3 minutes</string>
+    <string name="w3d3" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite, faites deux répétitions de ce qui suit :\n\nCourir 90 secondes\n\nMarcher 90 secondes\n\nCourir 3 minutes\n\nMarcher 3 minutes</string>
+
+    <string name="w4d1" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite :\n\nCourir 3 minutes\n\nMarcher 90 secondes\n\nCourir 5 minutes\n\nMarcher 2½ minutes\n\nCourir 3 minutes\n\nMarcher 90 secondes\n\nCourir 5 minutes</string>
+    <string name="w4d2" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite :\n\nCourir 3 minutes\n\nMarcher 90 secondes\n\nCourir 5 minutes\n\nMarcher 2½ minutes\n\nCourir 3 minutes\n\nMarcher 90 secondes\n\nCourir 5 minutes</string>
+    <string name="w4d3" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite :  Courir 3 minutes  Marcher 90 secondes  Courir 5 minutes  Marcher 2½ minutes  Courir 3 minutes  Marcher 90 secondes  Courir 5 minutes</string>
+
+    <string name="w5d1">Marche rapide d\'échauffement de cinq minutes. Ensuite :\n\nCourir 5 minutes\n\nMarcher 3 minutes\n\nCourir 5 minutes\n\nMarcher 3 minutes\n\nCourir 5 minutes</string>
+    <string name="w5d2">Marche rapide d\'échauffement de cinq minutes. Ensuite :\n\nCourir 8 minutes\n\nMarcher 5 minutes\n\nCourir 8 minutes</string>
+    <string name="w5d3">Marche rapide d\'échauffement de cinq minutes. Ensuite, courez 20 minutes sans marcher.</string>
+
+    <string name="w6d1">Marche rapide d\'échauffement de cinq minutes. Ensuite :\n\nCourir 5 minutes\n\nMarcher 3 minutes\n\nCourir 8 minutes\n\nMarcher 3 minutes\n\nCourir 5 minutes</string>
+    <string name="w6d2">Marche rapide d\'échauffement de cinq minutes. Ensuite :\n\nCourir 10 minutes\n\nMarcher 3 minutes\n\nCourir 10 minutes</string>
+    <string name="w6d3">Marche rapide d\'échauffement de cinq minutes. Ensuite, courez 22 minutes sans marcher.</string>
+
+    <string name="w7d1">Marche rapide d\'échauffement de cinq minutes. Ensuite, courez 25 minutes</string>
+    <string name="w7d2" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite, courez 25 minutes.</string>
+    <string name="w7d3" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite, courez 25 minutes.</string>
+
+    <string name="w8d1" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite, courez 28 minutes.</string>
+    <string name="w8d2" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite, courez 28 minutes.</string>
+    <string name="w8d3" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite, courez 28 minutes.</string>
+
+    <string name="w9d1" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite, courez 30 minutes.</string>
+    <string name="w9d2" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite, courez 30 minutes.</string>
+    <string name="w9d3" tools:ignore="DuplicateStrings">Marche rapide d\'échauffement de cinq minutes. Ensuite, courez 30 minutes.</string>
+    <string name="app_name">OpenC25k</string>
+</resources>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--General-->
+
+    <!--Main activity-->
+    <string name="week">Semana</string>
+    <string name="day">Día</string>
+
+    <!--Volume dialog-->
+    <string name="setVol">Ajustar volumen</string>
+    <string name="zero">0</string>
+
+    <!--Track activity-->
+    <string name="warmup">Calentamiento💪</string>
+    <string name="walk">Caminar🚶</string>
+    <string name="jog">Trotar🏃💨</string>
+    <string name="runComplete">🏁¡Lo lograste!🥳</string>
+    <string name="run_complete">¡Carrera completa!</string>
+    <string name="btnStartStr">Comenzar</string>
+    <string name="btnSkipStr">Saltar</string>
+    <string name="btnPauseStr">Pausar</string>
+    <string name="timeRemain">Tiempo total restante:</string>
+
+    <!--Menu-->
+    <string name="sound">Sonido</string>
+    <string name="testVolume">Probar volumen</string>
+    <string name="vibrate">Vibrar</string>
+    <string name="tts">Anuncios de voz</string>
+    <string name="checkbox">Casilla de verificación</string>
+    <string name="soundSelection">Selección de sonido</string>
+    <string name="tts_test_message">Probando anuncios de voz</string>
+
+    <!--Progress Header-->
+    <string name="progress_week_day">Semana %1$d Día %2$d</string>
+    <string name="progress_runs_completed">%1$d/%2$d carreras completadas</string>
+    <string name="progress_last_run_with_date">Última carrera: %1$s</string>
+    <string name="progress_last_run_never">Última carrera: Nunca</string>
+
+    <!--Active Run Banner-->
+    <string name="banner_interval_remaining">%1$s • %2$s restante</string>
+    <string name="banner_total_remaining">Total: %1$s</string>
+
+    <!--Sound Types-->
+    <string name="sound_beep">Pitido</string>
+    <string name="sound_bell_1">Campana 1</string>
+    <string name="sound_bell_2">Campana 2</string>
+    <string name="sound_chime_1">Campanilla 1</string>
+    <string name="sound_chime_2">Campanilla 2</string>
+    <string name="sound_whistle_1">Silbato 1</string>
+    <string name="sound_whistle_2">Silbato 2</string>
+    <string name="sound_none">Silencio</string>
+
+    <!--Accessibility-->
+    <string name="halfway_announcement">¡Vas por la mitad! ¡Sigue así!</string>
+
+    <!--Weeks, separated into a group of 3 per week-->
+    <string name="w1d1" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego alterna 60 segundos de trote y 90 segundos de caminata durante un total de 20 minutos.</string>
+    <string name="w1d2" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego alterna 60 segundos de trote y 90 segundos de caminata durante un total de 20 minutos.</string>
+    <string name="w1d3" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego alterna 60 segundos de trote y 90 segundos de caminata durante un total de 20 minutos.</string>
+
+    <string name="w2d1" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego alterna 90 segundos de trote y 2 minutos de caminata durante un total de 20 minutos.</string>
+    <string name="w2d2" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego alterna 90 segundos de trote y 2 minutos de caminata durante un total de 20 minutos.</string>
+    <string name="w2d3" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego alterna 90 segundos de trote y 2 minutos de caminata durante un total de 20 minutos.</string>
+
+    <string name="w3d1" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego haz dos repeticiones de lo siguiente:\n\nTrotar 90 segundos\n\nCaminar 90 segundos\n\nTrotar 3 minutos\n\nCaminar 3 minutos</string>
+    <string name="w3d2" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego haz dos repeticiones de lo siguiente:\n\nTrotar 90 segundos\n\nCaminar 90 segundos\n\nTrotar 3 minutos\n\nCaminar 3 minutos</string>
+    <string name="w3d3" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego haz dos repeticiones de lo siguiente:\n\nTrotar 90 segundos\n\nCaminar 90 segundos\n\nTrotar 3 minutos\n\nCaminar 3 minutos</string>
+
+    <string name="w4d1" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego:\n\nTrotar 3 minutos\n\nCaminar 90 segundos\n\nTrotar 5 minutos\n\nCaminar 2½ minutos\n\nTrotar 3 minutos\n\nCaminar 90 segundos\n\nTrotar 5 minutos</string>
+    <string name="w4d2" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego:\n\nTrotar 3 minutos\n\nCaminar 90 segundos\n\nTrotar 5 minutos\n\nCaminar 2½ minutos\n\nTrotar 3 minutos\n\nCaminar 90 segundos\n\nTrotar 5 minutos</string>
+    <string name="w4d3" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego:  Trotar 3 minutos  Caminar 90 segundos  Trotar 5 minutos  Caminar 2½ minutos  Trotar 3 minutos  Caminar 90 segundos  Trotar 5 minutos</string>
+
+    <string name="w5d1">Caminata rápida de calentamiento de cinco minutos. Luego:\n\nTrotar 5 minutos\n\nCaminar 3 minutos\n\nTrotar 5 minutos\n\nCaminar 3 minutos\n\nTrotar 5 minutos</string>
+    <string name="w5d2">Caminata rápida de calentamiento de cinco minutos. Luego:\n\nTrotar 8 minutos\n\nCaminar 5 minutos\n\nTrotar 8 minutos</string>
+    <string name="w5d3">Caminata rápida de calentamiento de cinco minutos. Luego, trota 20 minutos sin caminar.</string>
+
+    <string name="w6d1">Caminata rápida de calentamiento de cinco minutos. Luego:\n\nTrotar 5 minutos\n\nCaminar 3 minutos\n\nTrotar 8 minutos\n\nCaminar 3 minutos\n\nTrotar 5 minutos</string>
+    <string name="w6d2">Caminata rápida de calentamiento de cinco minutos. Luego:\n\nTrotar 10 minutos\n\nCaminar 3 minutos\n\nTrotar 10 minutos</string>
+    <string name="w6d3">Caminata rápida de calentamiento de cinco minutos. Luego, trota 22 minutos sin caminar.</string>
+
+    <string name="w7d1">Caminata rápida de calentamiento de cinco minutos. Luego, trota 25 minutos</string>
+    <string name="w7d2" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego, trota 25 minutos.</string>
+    <string name="w7d3" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego, trota 25 minutos.</string>
+
+    <string name="w8d1" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego, trota 28 minutos.</string>
+    <string name="w8d2" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego, trota 28 minutos.</string>
+    <string name="w8d3" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego, trota 28 minutos.</string>
+
+    <string name="w9d1" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego, trota 30 minutos.</string>
+    <string name="w9d2" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego, trota 30 minutos.</string>
+    <string name="w9d3" tools:ignore="DuplicateStrings">Caminata rápida de calentamiento de cinco minutos. Luego, trota 30 minutos.</string>
+    <string name="app_name">OpenC25k</string>
+</resources>

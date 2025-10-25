@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">OpenC25k</string>
+    <string name="week">أسبوع</string>
+    <string name="day">يوم</string>
+    <string name="setVol">ضبط الصوت</string>
+    <string name="zero">0</string>
+    <string name="warmup">الإحماء💪</string>
+    <string name="walk">المشي🚶</string>
+    <string name="jog">الهرولة🏃💨</string>
+    <string name="runComplete">🏁لقد نجحت!🥳</string>
+    <string name="run_complete">اكتمل الجري!</string>
+    <string name="btnStartStr">ابدأ</string>
+    <string name="btnSkipStr">تخطي</string>
+    <string name="btnPauseStr">إيقاف مؤقت</string>
+    <string name="timeRemain">الوقت الإجمالي المتبقي:</string>
+    <string name="sound">الصوت</string>
+    <string name="testVolume">اختبار الصوت</string>
+    <string name="vibrate">الاهتزاز</string>
+    <string name="tts">الإعلانات الصوتية</string>
+    <string name="checkbox">خانة اختيار</string>
+    <string name="soundSelection">اختيار الصوت</string>
+    <string name="tts_test_message">اختبار الإعلانات الصوتية</string>
+    <string name="progress_week_day">الأسبوع %1$d اليوم %2$d</string>
+    <string name="progress_runs_completed">%1$d/%2$d جري مكتمل</string>
+    <string name="progress_last_run_with_date">آخر جري: %1$s</string>
+    <string name="progress_last_run_never">آخر جري: أبدًا</string>
+    <string name="banner_interval_remaining">%1$s • %2$s متبقي</string>
+    <string name="banner_total_remaining">الإجمالي: %1$s</string>
+    <string name="sound_beep">صفير</string>
+    <string name="sound_bell_1">جرس 1</string>
+    <string name="sound_bell_2">جرس 2</string>
+    <string name="sound_chime_1">رنين 1</string>
+    <string name="sound_chime_2">رنين 2</string>
+    <string name="sound_whistle_1">صافرة 1</string>
+    <string name="sound_whistle_2">صافرة 2</string>
+    <string name="sound_none">صامت</string>
+    <string name="halfway_announcement">أنت في منتصف الطريق! استمر!</string>
+    <string name="w1d1" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم تناوب 60 ثانية من الهرولة و90 ثانية من المشي لمدة 20 دقيقة إجمالاً.</string>
+    <string name="w1d2" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم تناوب 60 ثانية من الهرولة و90 ثانية من المشي لمدة 20 دقيقة إجمالاً.</string>
+    <string name="w1d3" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم تناوب 60 ثانية من الهرولة و90 ثانية من المشي لمدة 20 دقيقة إجمالاً.</string>
+    <string name="w2d1" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم تناوب 90 ثانية من الهرولة ودقيقتين من المشي لمدة 20 دقيقة إجمالاً.</string>
+    <string name="w2d2" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم تناوب 90 ثانية من الهرولة ودقيقتين من المشي لمدة 20 دقيقة إجمالاً.</string>
+    <string name="w2d3" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم تناوب 90 ثانية من الهرولة ودقيقتين من المشي لمدة 20 دقيقة إجمالاً.</string>
+    <string name="w3d1" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم قم بتكرار ما يلي مرتين:\n\nهرولة 90 ثانية\n\nمشي 90 ثانية\n\nهرولة 3 دقائق\n\nمشي 3 دقائق</string>
+    <string name="w3d2" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم قم بتكرار ما يلي مرتين:\n\nهرولة 90 ثانية\n\nمشي 90 ثانية\n\nهرولة 3 دقائق\n\nمشي 3 دقائق</string>
+    <string name="w3d3" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم قم بتكرار ما يلي مرتين:\n\nهرولة 90 ثانية\n\nمشي 90 ثانية\n\nهرولة 3 دقائق\n\nمشي 3 دقائق</string>
+    <string name="w4d1" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم:\n\nهرولة 3 دقائق\n\nمشي 90 ثانية\n\nهرولة 5 دقائق\n\nمشي دقيقتين ونصف\n\nهرولة 3 دقائق\n\nمشي 90 ثانية\n\nهرولة 5 دقائق</string>
+    <string name="w4d2" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم:\n\nهرولة 3 دقائق\n\nمشي 90 ثانية\n\nهرولة 5 دقائق\n\nمشي دقيقتين ونصف\n\nهرولة 3 دقائق\n\nمشي 90 ثانية\n\nهرولة 5 دقائق</string>
+    <string name="w4d3" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم:  هرولة 3 دقائق  مشي 90 ثانية  هرولة 5 دقائق  مشي دقيقتين ونصف  هرولة 3 دقائق  مشي 90 ثانية  هرولة 5 دقائق</string>
+    <string name="w5d1">مشي سريع للإحماء لمدة خمس دقائق. ثم:\n\nهرولة 5 دقائق\n\nمشي 3 دقائق\n\nهرولة 5 دقائق\n\nمشي 3 دقائق\n\nهرولة 5 دقائق</string>
+    <string name="w5d2">مشي سريع للإحماء لمدة خمس دقائق. ثم:\n\nهرولة 8 دقائق\n\nمشي 5 دقائق\n\nهرولة 8 دقائق</string>
+    <string name="w5d3">مشي سريع للإحماء لمدة خمس دقائق. ثم، اهرول لمدة 20 دقيقة بدون مشي.</string>
+    <string name="w6d1">مشي سريع للإحماء لمدة خمس دقائق. ثم:\n\nهرولة 5 دقائق\n\nمشي 3 دقائق\n\nهرولة 8 دقائق\n\nمشي 3 دقائق\n\nهرولة 5 دقائق</string>
+    <string name="w6d2">مشي سريع للإحماء لمدة خمس دقائق. ثم:\n\nهرولة 10 دقائق\n\nمشي 3 دقائق\n\nهرولة 10 دقائق</string>
+    <string name="w6d3">مشي سريع للإحماء لمدة خمس دقائق. ثم، اهرول لمدة 22 دقيقة بدون مشي.</string>
+    <string name="w7d1">مشي سريع للإحماء لمدة خمس دقائق. ثم، اهرول لمدة 25 دقيقة</string>
+    <string name="w7d2" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم، اهرول لمدة 25 دقيقة.</string>
+    <string name="w7d3" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم، اهرول لمدة 25 دقيقة.</string>
+    <string name="w8d1" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم، اهرول لمدة 28 دقيقة.</string>
+    <string name="w8d2" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم، اهرول لمدة 28 دقيقة.</string>
+    <string name="w8d3" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم، اهرول لمدة 28 دقيقة.</string>
+    <string name="w9d1" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم، اهرول لمدة 30 دقيقة.</string>
+    <string name="w9d2" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم، اهرول لمدة 30 دقيقة.</string>
+    <string name="w9d3" tools:ignore="DuplicateStrings">مشي سريع للإحماء لمدة خمس دقائق. ثم، اهرول لمدة 30 دقيقة.</string>
+</resources>

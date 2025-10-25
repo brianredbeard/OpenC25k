@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">OpenC25k</string>
+    <string name="week">Minggu</string>
+    <string name="day">Hari</string>
+    <string name="setVol">Atur Volume</string>
+    <string name="zero">0</string>
+    <string name="warmup">Pemanasan💪</string>
+    <string name="walk">Jalan🚶</string>
+    <string name="jog">Joging🏃💨</string>
+    <string name="runComplete">🏁Anda berhasil!🥳</string>
+    <string name="run_complete">Lari selesai!</string>
+    <string name="btnStartStr">Mulai</string>
+    <string name="btnSkipStr">Lewati</string>
+    <string name="btnPauseStr">Jeda</string>
+    <string name="timeRemain">Total waktu tersisa:</string>
+    <string name="sound">Suara</string>
+    <string name="testVolume">Uji Volume</string>
+    <string name="vibrate">Getar</string>
+    <string name="tts">Pengumuman Suara</string>
+    <string name="checkbox">Kotak centang</string>
+    <string name="soundSelection">Pilihan Suara</string>
+    <string name="tts_test_message">Menguji pengumuman suara</string>
+    <string name="progress_week_day">Minggu %1$d Hari %2$d</string>
+    <string name="progress_runs_completed">%1$d/%2$d lari selesai</string>
+    <string name="progress_last_run_with_date">Lari terakhir: %1$s</string>
+    <string name="progress_last_run_never">Lari terakhir: Belum pernah</string>
+    <string name="banner_interval_remaining">%1$s • tersisa %2$s</string>
+    <string name="banner_total_remaining">Total: %1$s</string>
+    <string name="sound_beep">Bip</string>
+    <string name="sound_bell_1">Bel 1</string>
+    <string name="sound_bell_2">Bel 2</string>
+    <string name="sound_chime_1">Lonceng 1</string>
+    <string name="sound_chime_2">Lonceng 2</string>
+    <string name="sound_whistle_1">Peluit 1</string>
+    <string name="sound_whistle_2">Peluit 2</string>
+    <string name="sound_none">Sunyi</string>
+    <string name="halfway_announcement">Anda sudah setengah jalan! Teruskan!</string>
+    <string name="w1d1" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian bergantian 60 detik joging dan 90 detik jalan selama total 20 menit.</string>
+    <string name="w1d2" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian bergantian 60 detik joging dan 90 detik jalan selama total 20 menit.</string>
+    <string name="w1d3" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian bergantian 60 detik joging dan 90 detik jalan selama total 20 menit.</string>
+    <string name="w2d1" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian bergantian 90 detik joging dan 2 menit jalan selama total 20 menit.</string>
+    <string name="w2d2" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian bergantian 90 detik joging dan 2 menit jalan selama total 20 menit.</string>
+    <string name="w2d3" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian bergantian 90 detik joging dan 2 menit jalan selama total 20 menit.</string>
+    <string name="w3d1" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian lakukan dua pengulangan berikut:\n\nJoging 90 detik\n\nJalan 90 detik\n\nJoging 3 menit\n\nJalan 3 menit</string>
+    <string name="w3d2" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian lakukan dua pengulangan berikut:\n\nJoging 90 detik\n\nJalan 90 detik\n\nJoging 3 menit\n\nJalan 3 menit</string>
+    <string name="w3d3" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian lakukan dua pengulangan berikut:\n\nJoging 90 detik\n\nJalan 90 detik\n\nJoging 3 menit\n\nJalan 3 menit</string>
+    <string name="w4d1" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian:\n\nJoging 3 menit\n\nJalan 90 detik\n\nJoging 5 menit\n\nJalan 2½ menit\n\nJoging 3 menit\n\nJalan 90 detik\n\nJoging 5 menit</string>
+    <string name="w4d2" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian:\n\nJoging 3 menit\n\nJalan 90 detik\n\nJoging 5 menit\n\nJalan 2½ menit\n\nJoging 3 menit\n\nJalan 90 detik\n\nJoging 5 menit</string>
+    <string name="w4d3" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian:  Joging 3 menit  Jalan 90 detik  Joging 5 menit  Jalan 2½ menit  Joging 3 menit  Jalan 90 detik  Joging 5 menit</string>
+    <string name="w5d1">Jalan cepat pemanasan selama lima menit. Kemudian:\n\nJoging 5 menit\n\nJalan 3 menit\n\nJoging 5 menit\n\nJalan 3 menit\n\nJoging 5 menit</string>
+    <string name="w5d2">Jalan cepat pemanasan selama lima menit. Kemudian:\n\nJoging 8 menit\n\nJalan 5 menit\n\nJoging 8 menit</string>
+    <string name="w5d3">Jalan cepat pemanasan selama lima menit. Kemudian, joging 20 menit tanpa jalan.</string>
+    <string name="w6d1">Jalan cepat pemanasan selama lima menit. Kemudian:\n\nJoging 5 menit\n\nJalan 3 menit\n\nJoging 8 menit\n\nJalan 3 menit\n\nJoging 5 menit</string>
+    <string name="w6d2">Jalan cepat pemanasan selama lima menit. Kemudian:\n\nJoging 10 menit\n\nJalan 3 menit\n\nJoging 10 menit</string>
+    <string name="w6d3">Jalan cepat pemanasan selama lima menit. Kemudian, joging 22 menit tanpa jalan.</string>
+    <string name="w7d1">Jalan cepat pemanasan selama lima menit. Kemudian, joging 25 menit</string>
+    <string name="w7d2" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian, joging 25 menit.</string>
+    <string name="w7d3" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian, joging 25 menit.</string>
+    <string name="w8d1" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian, joging 28 menit.</string>
+    <string name="w8d2" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian, joging 28 menit.</string>
+    <string name="w8d3" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian, joging 28 menit.</string>
+    <string name="w9d1" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian, joging 30 menit.</string>
+    <string name="w9d2" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian, joging 30 menit.</string>
+    <string name="w9d3" tools:ignore="DuplicateStrings">Jalan cepat pemanasan selama lima menit. Kemudian, joging 30 menit.</string>
+</resources>
