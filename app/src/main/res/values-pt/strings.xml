@@ -15,7 +15,7 @@
     <string name="walk">Caminhar🚶</string>
     <string name="jog">Corrida leve🏃💨</string>
     <string name="runComplete">🏁Você conseguiu!🥳</string>
-    <string name="run_complete">Corrida completa!</string>
+    <string name="run_complete">Corrida concluída!</string>
     <string name="btnStartStr">Iniciar</string>
     <string name="btnSkipStr">Pular</string>
     <string name="btnPauseStr">Pausar</string>

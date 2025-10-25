@@ -14,7 +14,7 @@
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/run_complete"
         android:src="@android:drawable/star_on"
-        android:tint="@android:color/holo_orange_light" />
+        app:tint="@android:color/holo_orange_light" />
 
     <!-- Title -->
     <TextView

@@ -9,6 +9,7 @@
     <string name="walk">Gå🚶</string>
     <string name="jog">Jogga🏃💨</string>
     <string name="runComplete">🏁Du klarade det!🥳</string>
+    <string name="run_complete">Körningen avslutad!</string>
     <string name="btnStartStr">Starta</string>
     <string name="btnSkipStr">Hoppa över</string>
     <string name="btnPauseStr">Pausa</string>
