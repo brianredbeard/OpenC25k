@@ -16,8 +16,10 @@
     <string name="sound">Ljud</string>
     <string name="testVolume">Testa volym</string>
     <string name="vibrate">Vibrera</string>
+    <string name="tts">Röstmeddelanden</string>
     <string name="checkbox">Kryssruta</string>
     <string name="soundSelection">Ljudval</string>
+    <string name="tts_test_message">Testar röstmeddelanden</string>
 
     <!--Sound Types-->
     <string name="sound_beep">Pip</string>

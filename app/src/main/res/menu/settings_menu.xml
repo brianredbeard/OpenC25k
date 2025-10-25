@@ -15,6 +15,13 @@
         android:checked="true"
         android:title="@string/sound" />
     <item
+        android:id="@+id/tts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="true"
+        android:checked="true"
+        android:title="@string/tts" />
+    <item
         android:id="@+id/setVol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

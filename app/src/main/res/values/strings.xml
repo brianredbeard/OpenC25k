@@ -23,8 +23,10 @@
     <string name="sound">Sound</string>
     <string name="testVolume">Test Volume</string>
     <string name="vibrate">Vibrate</string>
+    <string name="tts">Voice Announcements</string>
     <string name="checkbox">Checkbox</string>
     <string name="soundSelection">Sound Selection</string>
+    <string name="tts_test_message">Testing voice announcements</string>
 
     <!--Sound Types-->
     <string name="sound_beep">Beep</string>
