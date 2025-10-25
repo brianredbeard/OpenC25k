@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package se.wmuth.openc25k.utils
 
 import android.Manifest
