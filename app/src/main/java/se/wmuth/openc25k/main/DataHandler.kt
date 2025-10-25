@@ -5,12 +5,14 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.runBlocking
 import se.wmuth.openc25k.R
 import se.wmuth.openc25k.data.Interval
 import se.wmuth.openc25k.data.Run
+import se.wmuth.openc25k.data.model.RunProgress
 import se.wmuth.openc25k.data.model.SoundType
 
 /**
@@ -225,6 +227,109 @@ class DataHandler(pCon: Context, datastore: DataStore<Preferences>) {
         return s
     }
 
+
+    /**
+     * Gets the index of the last run that was started/completed
+     * @return the last run index, or -1 if no run has been done
+     */
+    fun getLastRunIndex(): Int {
+        val key = androidx.datastore.preferences.core.intPreferencesKey("lastRunIndex")
+        var value: Int? = null
+        runBlocking {
+            ds.edit { settings ->
+                value = settings[key]
+            }
+        }
+        return value ?: -1
+    }
+
+    /**
+     * Persistently stores the last run index
+     * @param index the index of the last run started/completed
+     */
+    fun setLastRunIndex(index: Int) {
+        val key = androidx.datastore.preferences.core.intPreferencesKey("lastRunIndex")
+        runBlocking {
+            ds.edit { settings ->
+                settings[key] = index
+            }
+        }
+    }
+
+    /**
+     * Gets progress for all runs (completion counts and dates)
+     * @return array of RunProgress matching runs array length
+     */
+    fun getRunProgress(): Array<RunProgress> {
+        val key = stringPreferencesKey("runProgress")
+        var data: String? = null
+        runBlocking {
+            ds.edit { settings ->
+                data = settings[key]
+            }
+        }
+
+        return deserializeProgress(data) ?: Array(27) { RunProgress() }
+    }
+
+    /**
+     * Increment completion count for a specific run
+     * @param runIndex the index of the run to increment
+     */
+    fun incrementRunCompletion(runIndex: Int) {
+        val allProgress = getRunProgress().toMutableList()
+
+        // Ensure the list is large enough
+        while (allProgress.size <= runIndex) {
+            allProgress.add(RunProgress())
+        }
+
+        // Increment the specific run's progress
+        allProgress[runIndex] = allProgress[runIndex].withCompletion()
+
+        setRunProgress(allProgress.toTypedArray())
+    }
+
+    /**
+     * Persistently stores run progress
+     * @param progress array of RunProgress for all runs
+     */
+    private fun setRunProgress(progress: Array<RunProgress>) {
+        val key = stringPreferencesKey("runProgress")
+        runBlocking {
+            ds.edit { settings ->
+                settings[key] = serializeProgress(progress)
+            }
+        }
+    }
+
+    /**
+     * Serialize run progress to string
+     * Format: "count:date||count:date||..."
+     */
+    private fun serializeProgress(progress: Array<RunProgress>): String {
+        return progress.joinToString("||") { p ->
+            "${p.completionCount}:${p.lastCompletedDate ?: ""}"
+        }
+    }
+
+    /**
+     * Deserialize run progress from string
+     */
+    private fun deserializeProgress(data: String?): Array<RunProgress>? {
+        if (data == null || data.isEmpty()) return null
+
+        return try {
+            data.split("||").map { entry ->
+                val parts = entry.split(":")
+                val count = parts.getOrNull(0)?.toIntOrNull() ?: 0
+                val date = parts.getOrNull(1)?.toLongOrNull()
+                RunProgress(count, date)
+            }.toTypedArray()
+        } catch (e: Exception) {
+            null
+        }
+    }
 
     /**
      * Extremely basic deserialization function, could be improved
