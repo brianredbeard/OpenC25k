@@ -46,7 +46,7 @@ class BeeperTest {
 
     @Test
     fun initializesWithBellSound() {
-        beeper = Beeper(context, 0.5f, audioFocusManager, SoundType.BELL)
+        beeper = Beeper(context, 0.5f, audioFocusManager, SoundType.BELL_1)
 
         // Should initialize without crashing
     }
@@ -190,8 +190,8 @@ class BeeperTest {
         Thread.sleep(1500)
         beeperBeep.release()
 
-        // Test BELL
-        val beeperBell = Beeper(context, 0.5f, audioFocusManager, SoundType.BELL)
+        // Test BELL_1
+        val beeperBell = Beeper(context, 0.5f, audioFocusManager, SoundType.BELL_1)
         beeperBell.beep()
         Thread.sleep(1500)
         beeperBell.release()
