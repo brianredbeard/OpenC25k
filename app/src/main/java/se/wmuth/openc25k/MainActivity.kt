@@ -20,6 +20,7 @@ import se.wmuth.openc25k.main.RunAdapter
 import se.wmuth.openc25k.main.SettingsMenu
 import se.wmuth.openc25k.main.SoundSelectionDialog
 import se.wmuth.openc25k.main.VolumeDialog
+import se.wmuth.openc25k.track.RunAnnouncer
 
 // Get the datastore for the app
 val Context.datastore: DataStore<Preferences> by preferencesDataStore(name = "settings")
