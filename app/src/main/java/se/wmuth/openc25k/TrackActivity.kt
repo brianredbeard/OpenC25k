@@ -11,8 +11,11 @@ import androidx.appcompat.app.AppCompatActivity
 import se.wmuth.openc25k.data.Interval
 import se.wmuth.openc25k.data.Run
 import se.wmuth.openc25k.data.model.SoundType
+import se.wmuth.openc25k.data.repository.ProgressRepository
 import se.wmuth.openc25k.databinding.ActivityTrackBinding
+import se.wmuth.openc25k.main.DataHandler
 import se.wmuth.openc25k.service.RunTrackingService
+import se.wmuth.openc25k.ui.RunCompletionDialog
 import timber.log.Timber
 
 /**
@@ -25,6 +28,9 @@ import timber.log.Timber
 class TrackActivity : AppCompatActivity(), RunTrackingService.RunStateListener {
 
     private lateinit var binding: ActivityTrackBinding
+    private lateinit var handler: DataHandler
+    private lateinit var progressRepository: ProgressRepository
+    private lateinit var completionDialog: RunCompletionDialog
     private var service: RunTrackingService? = null
     private var bound = false
     private var runIndex: Int = -1
@@ -56,6 +62,11 @@ class TrackActivity : AppCompatActivity(), RunTrackingService.RunStateListener {
         super.onCreate(savedInstanceState)
         binding = ActivityTrackBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Initialize data handler and repository
+        handler = DataHandler(this, datastore)
+        progressRepository = ProgressRepository(handler)
+        completionDialog = RunCompletionDialog(this, progressRepository)
 
         // Get run data from intent
         val run = if (Build.VERSION.SDK_INT >= 33) {
@@ -179,20 +190,31 @@ class TrackActivity : AppCompatActivity(), RunTrackingService.RunStateListener {
     override fun onRunComplete() {
         runOnUiThread {
             binding.twStatus.text = getString(R.string.runComplete)
-        }
 
-        // Return success result
-        val resultIntent = Intent().apply {
-            putExtra("id", runIndex)
+            // Show completion dialog
+            val runs = handler.getRuns()
+            val completedRun = service?.getRun()
+
+            if (completedRun != null) {
+                completionDialog.show(completedRun, runIndex, runs) {
+                    // Return success result and finish when dialog dismissed
+                    val resultIntent = Intent().apply {
+                        putExtra("id", runIndex)
+                    }
+                    setResult(RESULT_OK, resultIntent)
+                    finish()
+                }
+            } else {
+                // Fallback if service unavailable
+                val resultIntent = Intent().apply {
+                    putExtra("id", runIndex)
+                }
+                setResult(RESULT_OK, resultIntent)
+                finish()
+            }
         }
-        setResult(RESULT_OK, resultIntent)
 
         Timber.d("Run completed!")
-
-        // Finish activity after short delay
-        binding.root.postDelayed({
-            finish()
-        }, 2000)
     }
 
     override fun onRunStateChanged(isRunning: Boolean) {
