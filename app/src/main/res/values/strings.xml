@@ -25,6 +25,9 @@
     <string name="vibrate">Vibrate</string>
     <string name="checkbox">Checkbox</string>
 
+    <!--Accessibility-->
+    <string name="halfway_announcement">You\'re halfway there! Keep it up!</string>
+
     <!--Weeks, separated into a group of 3 per week-->
     <string name="w1d1" tools:ignore="DuplicateStrings">Brisk five-minute warmup walk. Then alternate 60 seconds of jogging and 90 seconds of walking for a total of 20 minutes.</string>
     <string name="w1d2" tools:ignore="DuplicateStrings">Brisk five-minute warmup walk. Then alternate 60 seconds of jogging and 90 seconds of walking for a total of 20 minutes.</string>
