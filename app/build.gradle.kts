@@ -20,6 +20,23 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
+    }
+
+    flavorDimensions += "distribution"
+
+    productFlavors {
+        create("fdroid") {
+            dimension = "distribution"
+            buildConfigField("Boolean", "IS_FDROID", "true")
+            buildConfigField("String", "DISTRIBUTION", "\"fdroid\"")
+        }
+
+        create("googlePlay") {
+            dimension = "distribution"
+            buildConfigField("Boolean", "IS_FDROID", "false")
+            buildConfigField("String", "DISTRIBUTION", "\"googleplay\"")
+        }
     }
 
     buildTypes {
@@ -48,6 +65,10 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.cardview:cardview:1.0.0")
+
+    // Logging
+    implementation("com.jakewharton.timber:timber:5.0.1")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
