@@ -21,6 +21,7 @@ import se.wmuth.openc25k.data.model.SoundType
 import se.wmuth.openc25k.track.RunAnnouncer
 import se.wmuth.openc25k.track.RunTimer
 import se.wmuth.openc25k.track.Shaker
+import se.wmuth.openc25k.utils.PhoneCallListener
 import timber.log.Timber
 
 /**
@@ -66,6 +67,7 @@ class RunTrackingService : Service(), RunTimer.RunTimerListener {
     private lateinit var beeper: Beeper
     private lateinit var announcer: RunAnnouncer
     private lateinit var shaker: Shaker
+    private lateinit var phoneCallListener: PhoneCallListener
 
     // Run state
     private lateinit var run: Run
@@ -81,6 +83,7 @@ class RunTrackingService : Service(), RunTimer.RunTimerListener {
     // State tracking
     private var isRunning = false
     private var isCompleted = false
+    private var isPausedByPhoneCall = false
 
     // State change listeners
     private val stateListeners = mutableListOf<RunStateListener>()
@@ -113,6 +116,12 @@ class RunTrackingService : Service(), RunTimer.RunTimerListener {
 
         // Initialize audio focus manager
         audioFocusManager = AudioFocusManager(this)
+
+        // Initialize phone call listener
+        phoneCallListener = PhoneCallListener(this) { isInCall ->
+            handlePhoneCall(isInCall)
+        }
+        phoneCallListener.startListening()
 
         // Create notification channel
         createNotificationChannel()
@@ -419,6 +428,25 @@ class RunTrackingService : Service(), RunTimer.RunTimerListener {
         stateListeners.forEach { it.onRunStateChanged(isRunning) }
     }
 
+    // Phone call handling
+
+    /**
+     * Handle phone call state changes - auto-pause when call starts
+     */
+    private fun handlePhoneCall(isInCall: Boolean) {
+        if (isInCall && isRunning) {
+            // Phone call started while running - pause
+            Timber.d("Phone call started, auto-pausing run")
+            pause()
+            isPausedByPhoneCall = true
+        } else if (!isInCall && isPausedByPhoneCall) {
+            // Phone call ended and we auto-paused - optionally auto-resume
+            // For safety, we'll leave it paused and let user manually resume
+            Timber.d("Phone call ended, run remains paused")
+            isPausedByPhoneCall = false
+        }
+    }
+
     // Getters for current state
 
     fun getRunIndex(): Int = runIndex
@@ -434,6 +462,7 @@ class RunTrackingService : Service(), RunTimer.RunTimerListener {
     private fun cleanup() {
         if (::beeper.isInitialized) beeper.release()
         if (::announcer.isInitialized) announcer.release()
+        if (::phoneCallListener.isInitialized) phoneCallListener.stopListening()
         Timber.d("Service cleanup complete")
     }
 
