@@ -46,7 +46,10 @@ class RunAnnouncerTest {
 
     @After
     fun tearDown() {
-        announcer.release()
+        // Only release if announcer was initialized in setup
+        if (::announcer.isInitialized) {
+            announcer.release()
+        }
     }
 
     @Test

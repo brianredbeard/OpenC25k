@@ -33,7 +33,10 @@ class BeeperTest {
 
     @After
     fun tearDown() {
-        beeper.release()
+        // Only release if beeper was initialized in the test
+        if (::beeper.isInitialized) {
+            beeper.release()
+        }
     }
 
     @Test

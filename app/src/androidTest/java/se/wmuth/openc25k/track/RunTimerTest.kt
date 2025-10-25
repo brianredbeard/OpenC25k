@@ -1,6 +1,9 @@
 package se.wmuth.openc25k.track
 
+import android.os.Looper
+import androidx.test.annotation.UiThreadTest
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -12,6 +15,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Integration tests for RunTimer
  * Uses Android test framework because RunTimer depends on Android's CountDownTimer
+ * which requires a Looper to be present on the thread
  */
 @RunWith(AndroidJUnit4::class)
 class RunTimerTest {
@@ -30,9 +34,20 @@ class RunTimerTest {
         listener = TestRunTimerListener()
     }
 
+    /**
+     * Helper to create RunTimer on the main thread to satisfy CountDownTimer's Handler requirement
+     */
+    private fun createTimer(intervals: Array<Interval> = this.intervals): RunTimer {
+        var result: RunTimer? = null
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            result = RunTimer(intervals, listener)
+        }
+        return result!!
+    }
+
     @Test
     fun initialStateShowsCorrectTimeRemaining() {
-        timer = RunTimer(intervals, listener)
+        timer = createTimer()
 
         // Initial state should show full time for first interval
         assertThat(timer.getIntervalRemaining()).isEqualTo("00:05")
@@ -41,7 +56,7 @@ class RunTimerTest {
 
     @Test
     fun timerTicksCorrectly() {
-        timer = RunTimer(intervals, listener)
+        timer = createTimer()
 
         timer.start()
         Thread.sleep(2200) // Wait for 2 ticks + buffer
@@ -52,7 +67,7 @@ class RunTimerTest {
 
     @Test
     fun timerPausesAndResumes() {
-        timer = RunTimer(intervals, listener)
+        timer = createTimer()
 
         timer.start()
         Thread.sleep(1100) // 1 tick
@@ -73,7 +88,7 @@ class RunTimerTest {
 
     @Test
     fun timerMovesToNextInterval() {
-        timer = RunTimer(intervals, listener)
+        timer = createTimer()
 
         timer.start()
         Thread.sleep(5500) // Wait for first interval to complete (5 seconds + buffer)
@@ -84,7 +99,7 @@ class RunTimerTest {
 
     @Test
     fun skipAdvancesToNextInterval() {
-        timer = RunTimer(intervals, listener)
+        timer = createTimer()
 
         timer.start()
         Thread.sleep(1100) // Start timing
@@ -103,7 +118,7 @@ class RunTimerTest {
             Interval(2, "Short2")
         )
         listener = TestRunTimerListener()
-        timer = RunTimer(intervals, listener)
+        timer = createTimer(intervals)
 
         timer.start()
         Thread.sleep(4500) // Wait for both intervals
@@ -113,7 +128,7 @@ class RunTimerTest {
 
     @Test
     fun skipThroughAllIntervalsFinishesRun() {
-        timer = RunTimer(intervals, listener)
+        timer = createTimer()
 
         timer.start()
         Thread.sleep(100)
@@ -130,7 +145,7 @@ class RunTimerTest {
     @Test
     fun getIntervalRemainingFormatsCorrectly() {
         val longIntervals = arrayOf(Interval(125, "Long")) // 2:05
-        timer = RunTimer(longIntervals, listener)
+        timer = createTimer(longIntervals)
 
         assertThat(timer.getIntervalRemaining()).isEqualTo("02:05")
     }
@@ -142,7 +157,7 @@ class RunTimerTest {
             Interval(90, "Second"),  // 1:30
             Interval(30, "Third")    // 0:30
         ) // Total: 3:00
-        timer = RunTimer(multiIntervals, listener)
+        timer = createTimer(multiIntervals)
 
         assertThat(timer.getTotalRemaining()).isEqualTo("03:00")
     }
@@ -155,7 +170,7 @@ class RunTimerTest {
             Interval(90, "Second")
         ) // Total: 180 seconds, halfway at 90
         listener = TestRunTimerListener()
-        timer = RunTimer(longRun, listener)
+        timer = createTimer(longRun)
 
         timer.start()
         Thread.sleep(91000) // Wait past halfway point (90 seconds + buffer)
@@ -172,7 +187,7 @@ class RunTimerTest {
             Interval(30, "Second")
         ) // Total: 60 seconds
         listener = TestRunTimerListener()
-        timer = RunTimer(shortRun, listener)
+        timer = createTimer(shortRun)
 
         timer.start()
         Thread.sleep(61000) // Wait for entire run
@@ -182,7 +197,7 @@ class RunTimerTest {
 
     @Test
     fun multipleSkipsInQuickSuccession() {
-        timer = RunTimer(intervals, listener)
+        timer = createTimer()
 
         timer.start()
         Thread.sleep(500)
@@ -197,7 +212,7 @@ class RunTimerTest {
 
     @Test
     fun pauseWithoutStartIsDefensive() {
-        timer = RunTimer(intervals, listener)
+        timer = createTimer()
 
         // Should not crash
         timer.pause()
@@ -205,7 +220,7 @@ class RunTimerTest {
 
     @Test
     fun multipleStartCallsDoNotCreateMultipleTimers() {
-        timer = RunTimer(intervals, listener)
+        timer = createTimer()
 
         timer.start()
         Thread.sleep(1100) // 1 tick

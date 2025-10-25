@@ -97,6 +97,8 @@ dependencies {
     androidTestImplementation("org.mockito:mockito-android:5.7.0")
     androidTestImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
     androidTestImplementation("com.google.truth:truth:1.1.5")
+    // Enable mocking final classes on Android (required for instrumented tests)
+    androidTestImplementation("org.mockito:mockito-inline:5.2.0")
 
     // Static analysis
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.4")
