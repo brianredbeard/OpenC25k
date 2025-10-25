@@ -29,6 +29,7 @@ class Beeper(
 ) : MediaPlayer.OnCompletionListener {
     private var mp: MediaPlayer? = null
     private var playCount: UInt = 0u
+    private var hasFocusForSequence: Boolean = false
 
     init {
         // Only initialize MediaPlayer if soundType is not NONE
@@ -77,14 +78,40 @@ class Beeper(
                 if (!focusGranted) {
                     Timber.w("Audio focus denied, playing anyway")
                 }
+                hasFocusForSequence = true
             }
             mp?.start()
         } catch (e: Exception) {
             Timber.e(e, "Error playing beep")
             // If we fail to play and this was the first beep, abandon focus
-            if (isFirstInSequence) {
+            if (isFirstInSequence && hasFocusForSequence) {
                 audioFocusManager.abandonFocus()
+                hasFocusForSequence = false
             }
+        }
+    }
+
+    /**
+     * Stops any currently playing beep and abandons audio focus if held
+     */
+    fun stop() {
+        try {
+            mp?.let { mediaPlayer ->
+                if (mediaPlayer.isPlaying) {
+                    mediaPlayer.pause()
+                    mediaPlayer.seekTo(0)
+                    Timber.d("Beep stopped")
+                }
+            }
+            // If we have focus for this sequence, abandon it
+            if (hasFocusForSequence) {
+                audioFocusManager.abandonFocus()
+                hasFocusForSequence = false
+                Timber.d("Beep sequence interrupted, focus abandoned")
+            }
+            playCount = 0u
+        } catch (e: Exception) {
+            Timber.e(e, "Error stopping beep")
         }
     }
 
@@ -92,6 +119,7 @@ class Beeper(
      * Makes the Beeper beep once
      */
     fun beep() {
+        stop() // Stop any in-progress beep first
         playCount = 0u
         beep(isFirstInSequence = true)
     }
@@ -104,6 +132,7 @@ class Beeper(
             Timber.w("beepMultiple called with 0, ignoring")
             return
         }
+        stop() // Stop any in-progress beep first
         playCount = number - 1u
         beep(isFirstInSequence = true)
     }
@@ -115,8 +144,11 @@ class Beeper(
             beep(isFirstInSequence = false)
         } else {
             // Abandon focus when all beeps complete
-            audioFocusManager.abandonFocus()
-            Timber.d("Beep sequence complete, focus abandoned")
+            if (hasFocusForSequence) {
+                audioFocusManager.abandonFocus()
+                hasFocusForSequence = false
+                Timber.d("Beep sequence complete, focus abandoned")
+            }
         }
     }
 
@@ -126,7 +158,7 @@ class Beeper(
      */
     fun release() {
         try {
-            audioFocusManager.abandonFocus()
+            stop() // Stop any playing beep and release focus
             mp?.release()
             mp = null
             Timber.d("Beeper released")
