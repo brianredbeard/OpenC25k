@@ -61,36 +61,62 @@ class Beeper(
     /**
      * Makes the Beeper beep
      * Does nothing if soundType is NONE
+     *
+     * @param isFirstInSequence If true, requests audio focus. If false, assumes focus is already held.
      */
-    fun beep() {
+    private fun beep(isFirstInSequence: Boolean = true) {
         if (soundType == SoundType.NONE || mp == null) {
             Timber.d("Beep skipped (silent mode or no MediaPlayer)")
             return
         }
 
         try {
-            audioFocusManager.requestFocus()
+            // Only request focus on the first beep in a sequence
+            if (isFirstInSequence) {
+                val focusGranted = audioFocusManager.requestFocus()
+                if (!focusGranted) {
+                    Timber.w("Audio focus denied, playing anyway")
+                }
+            }
             mp?.start()
         } catch (e: Exception) {
             Timber.e(e, "Error playing beep")
+            // If we fail to play and this was the first beep, abandon focus
+            if (isFirstInSequence) {
+                audioFocusManager.abandonFocus()
+            }
         }
+    }
+
+    /**
+     * Makes the Beeper beep once
+     */
+    fun beep() {
+        playCount = 0u
+        beep(isFirstInSequence = true)
     }
 
     /**
      * Makes the Beeper beep a [number] of times
      */
     fun beepMultiple(number: UInt) {
+        if (number == 0u) {
+            Timber.w("beepMultiple called with 0, ignoring")
+            return
+        }
         playCount = number - 1u
-        beep()
+        beep(isFirstInSequence = true)
     }
 
     override fun onCompletion(p0: MediaPlayer?) {
         if (playCount > 0u) {
             playCount--
-            beep()
+            // Subsequent beeps in sequence - don't re-request focus
+            beep(isFirstInSequence = false)
         } else {
             // Abandon focus when all beeps complete
             audioFocusManager.abandonFocus()
+            Timber.d("Beep sequence complete, focus abandoned")
         }
     }
 
