@@ -8,6 +8,7 @@ import android.media.AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE
 import android.media.MediaPlayer
 import se.wmuth.openc25k.R
 import se.wmuth.openc25k.audio.AudioFocusManager
+import se.wmuth.openc25k.data.model.SoundType
 import timber.log.Timber
 
 /**
@@ -17,43 +18,56 @@ import timber.log.Timber
  * @param pCon the context of the parent of the beeper
  * @param vol the initial volume of the beeper, 0.0 to 1.0
  * @param audioFocusManager manages audio focus for music ducking
+ * @param soundType the type of sound to play (defaults to BEEP)
  * @constructor Creates beeper with standard attributes
  */
 class Beeper(
     pCon: Context,
     vol: Float,
-    private val audioFocusManager: AudioFocusManager
+    private val audioFocusManager: AudioFocusManager,
+    private val soundType: SoundType = SoundType.BEEP
 ) : MediaPlayer.OnCompletionListener {
     private var mp: MediaPlayer? = null
     private var playCount: UInt = 0u
 
     init {
-        try {
-            val file: AssetFileDescriptor = pCon.resources.openRawResourceFd(R.raw.beep)
-            mp = MediaPlayer().apply {
-                setAudioAttributes(
-                    AudioAttributes
-                        .Builder()
-                        .setContentType(CONTENT_TYPE_SONIFICATION)
-                        .setUsage(USAGE_ASSISTANCE_NAVIGATION_GUIDANCE)
-                        .build()
-                )
-                setVolume(vol, vol)
-                setDataSource(file.fileDescriptor, file.startOffset, file.length)
+        // Only initialize MediaPlayer if soundType is not NONE
+        if (soundType != SoundType.NONE && soundType.resourceId != null) {
+            try {
+                val file: AssetFileDescriptor = pCon.resources.openRawResourceFd(soundType.resourceId)
+                mp = MediaPlayer().apply {
+                    setAudioAttributes(
+                        AudioAttributes
+                            .Builder()
+                            .setContentType(CONTENT_TYPE_SONIFICATION)
+                            .setUsage(USAGE_ASSISTANCE_NAVIGATION_GUIDANCE)
+                            .build()
+                    )
+                    setVolume(vol, vol)
+                    setDataSource(file.fileDescriptor, file.startOffset, file.length)
+                }
+                mp?.prepare()
+                mp?.setOnCompletionListener(this)
+                file.close()
+                Timber.d("Beeper initialized with sound: ${soundType.displayName}, volume: $vol")
+            } catch (e: Exception) {
+                Timber.e(e, "Error initializing Beeper with sound: ${soundType.displayName}")
             }
-            mp?.prepare()
-            mp?.setOnCompletionListener(this)
-            file.close()
-            Timber.d("Beeper initialized with volume: $vol")
-        } catch (e: Exception) {
-            Timber.e(e, "Error initializing Beeper")
+        } else {
+            Timber.d("Beeper initialized with silent mode (NONE)")
         }
     }
 
     /**
      * Makes the Beeper beep
+     * Does nothing if soundType is NONE
      */
     fun beep() {
+        if (soundType == SoundType.NONE || mp == null) {
+            Timber.d("Beep skipped (silent mode or no MediaPlayer)")
+            return
+        }
+
         try {
             audioFocusManager.requestFocus()
             mp?.start()
