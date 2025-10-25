@@ -13,6 +13,7 @@ import se.wmuth.openc25k.databinding.ActivityTrackBinding
 import se.wmuth.openc25k.track.RunAnnouncer
 import se.wmuth.openc25k.track.RunTimer
 import se.wmuth.openc25k.track.Shaker
+import timber.log.Timber
 
 /**
  * Combines all the tracking parts of the app to one cohesive whole
@@ -115,6 +116,26 @@ class TrackActivity : AppCompatActivity(), RunTimer.RunTimerListener {
         if (vibrate) {
             shaker.completeShake()
         }
+    }
+
+    override fun onHalfway() {
+        runOnUiThread {
+            // Announce halfway point to TalkBack
+            binding.root.announceForAccessibility(getString(R.string.halfway_announcement))
+
+            // Announce via TTS
+            announcer.announce(getString(R.string.halfway_announcement))
+        }
+
+        // Single celebratory beep
+        if (sound) {
+            beeper.beep()
+        }
+        if (vibrate) {
+            shaker.walkShake()
+        }
+
+        Timber.d("Halfway point reached!")
     }
 
     override fun onDestroy() {
