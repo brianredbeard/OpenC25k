@@ -129,6 +129,21 @@ class DataHandler(pCon: Context, datastore: DataStore<Preferences>) {
     }
 
     /**
+     * Gets the text-to-speech enabled setting
+     * @return the saved setting for TTS, default true
+     */
+    fun getTTS(): Boolean {
+        val tts = booleanPreferencesKey("tts")
+        var d: Boolean? = null
+        runBlocking {
+            ds.edit { settings ->
+                d = settings[tts]
+            }
+        }
+        return d ?: true
+    }
+
+    /**
      * Gets the sound type setting
      * @return the saved sound type, default BEEP
      */
@@ -141,6 +156,19 @@ class DataHandler(pCon: Context, datastore: DataStore<Preferences>) {
             }
         }
         return if (d != null) SoundType.fromName(d!!) else SoundType.BEEP
+    }
+
+    /**
+     * Persistently stores the text-to-speech setting
+     * @param tts whether TTS should be enabled or not
+     */
+    fun setTTS(tts: Boolean) {
+        val t = booleanPreferencesKey("tts")
+        runBlocking {
+            ds.edit { settings ->
+                settings[t] = tts
+            }
+        }
     }
 
     /**
