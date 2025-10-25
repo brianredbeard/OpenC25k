@@ -67,14 +67,18 @@ class RunAnnouncer(
 
     /**
      * Announces text via TTS
+     *
+     * @param text The text to speak
+     * @param queueMode QUEUE_FLUSH to interrupt current speech, QUEUE_ADD to queue after current
      */
-    fun announce(text: String) {
+    fun announce(text: String, queueMode: Int = TextToSpeech.QUEUE_FLUSH) {
         if (!isInitialized) {
             Timber.w("TTS not initialized, cannot announce: $text")
             return
         }
 
-        tts?.speak(text, TextToSpeech.QUEUE_ADD, null, text.hashCode().toString())
+        tts?.speak(text, queueMode, null, text.hashCode().toString())
+        Timber.d("TTS announce: $text (queueMode=${if (queueMode == TextToSpeech.QUEUE_FLUSH) "FLUSH" else "ADD"})")
     }
 
     /**
