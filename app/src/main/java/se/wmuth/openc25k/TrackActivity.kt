@@ -5,10 +5,12 @@ import android.os.Build
 import android.os.Bundle
 import android.os.VibratorManager
 import androidx.appcompat.app.AppCompatActivity
+import se.wmuth.openc25k.audio.AudioFocusManager
 import se.wmuth.openc25k.both.Beeper
 import se.wmuth.openc25k.data.Interval
 import se.wmuth.openc25k.data.Run
 import se.wmuth.openc25k.databinding.ActivityTrackBinding
+import se.wmuth.openc25k.track.RunAnnouncer
 import se.wmuth.openc25k.track.RunTimer
 import se.wmuth.openc25k.track.Shaker
 
@@ -22,7 +24,9 @@ import se.wmuth.openc25k.track.Shaker
  *      "volume" -> what the volume is: Float
  */
 class TrackActivity : AppCompatActivity(), RunTimer.RunTimerListener {
+    private lateinit var audioFocusManager: AudioFocusManager
     private lateinit var beeper: Beeper
+    private lateinit var announcer: RunAnnouncer
     private lateinit var binding: ActivityTrackBinding
     private lateinit var intentReturn: Intent
     private lateinit var intervals: Iterator<Interval>
@@ -48,7 +52,9 @@ class TrackActivity : AppCompatActivity(), RunTimer.RunTimerListener {
         sound = intent.getBooleanExtra("sound", true)
         vibrate = intent.getBooleanExtra("vibrate", true)
 
-        beeper = Beeper(this, intent.getFloatExtra("volume", 0.5f))
+        audioFocusManager = AudioFocusManager(this)
+        beeper = Beeper(this, intent.getFloatExtra("volume", 0.5f), audioFocusManager)
+        announcer = RunAnnouncer(this, audioFocusManager)
         shaker = Shaker(getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager)
         timer = RunTimer(run.intervals, this)
 
@@ -114,5 +120,7 @@ class TrackActivity : AppCompatActivity(), RunTimer.RunTimerListener {
     override fun onDestroy() {
         super.onDestroy()
         timer.pause()
+        announcer.release()
+        beeper.release()
     }
 }
