@@ -23,6 +23,7 @@ import timber.log.Timber
  *      "run" -> run object to track: Run
  *      "sound" -> if sound is enabled: Boolean
  *      "vibrate" -> if vibration is enabled: Boolean
+ *      "tts" -> if text-to-speech is enabled: Boolean
  *      "volume" -> what the volume is: Float
  *      "soundType" -> which sound to play: String (SoundType.name)
  */
@@ -37,6 +38,7 @@ class TrackActivity : AppCompatActivity(), RunTimer.RunTimerListener {
     private lateinit var timer: RunTimer
     private var sound: Boolean = true
     private var vibrate: Boolean = true
+    private var tts: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +56,7 @@ class TrackActivity : AppCompatActivity(), RunTimer.RunTimerListener {
         intervals = run.intervals.iterator()
         sound = intent.getBooleanExtra("sound", true)
         vibrate = intent.getBooleanExtra("vibrate", true)
+        tts = intent.getBooleanExtra("tts", true)
 
         audioFocusManager = AudioFocusManager(this)
 
@@ -95,8 +98,10 @@ class TrackActivity : AppCompatActivity(), RunTimer.RunTimerListener {
             binding.twTimer.text = next.time.toString()
         }
 
-        // Announce the interval change with duration
-        announcer.announceIntervalWithDuration(next.title, next.time)
+        // Announce the interval change with duration if TTS is enabled
+        if (tts) {
+            announcer.announceIntervalWithDuration(next.title, next.time)
+        }
 
         if (next.title == getString(R.string.walk)) {
             if (sound) {
@@ -133,8 +138,10 @@ class TrackActivity : AppCompatActivity(), RunTimer.RunTimerListener {
             // Announce halfway point to TalkBack
             binding.root.announceForAccessibility(getString(R.string.halfway_announcement))
 
-            // Announce via TTS
-            announcer.announce(getString(R.string.halfway_announcement))
+            // Announce via TTS if enabled
+            if (tts) {
+                announcer.announce(getString(R.string.halfway_announcement))
+            }
         }
 
         // Single celebratory beep
