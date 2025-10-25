@@ -1,0 +1,323 @@
+# Comprehensive CI pipeline for OpenC25k Android app
+# Runs on push to main/develop and pull requests
+# Includes testing, linting, security scanning, and build automation
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    # Run nightly to catch regressions from dependency updates
+    - cron: '0 2 * * *'
+
+env:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.caching=true -Dorg.gradle.parallel=true"
+  JAVA_VERSION: "17"
+
+jobs:
+  # Job 1: Code Quality and Linting
+  lint:
+    name: Lint and Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Setup Gradle cache
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: false
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Run Android Lint
+        run: ./gradlew lintFdroidDebug lintGooglePlayDebug --continue
+
+      - name: Run Detekt (static analysis)
+        run: ./gradlew detekt || echo "::warning::Detekt issues found"
+        continue-on-error: true
+
+      - name: Check Kotlin code formatting
+        run: ./gradlew ktlintCheck || echo "::warning::Kotlin formatting issues found"
+        continue-on-error: true
+
+      - name: Upload lint reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lint-reports
+          path: |
+            app/build/reports/lint-results-*.html
+            app/build/reports/detekt/
+            app/build/reports/ktlint/
+          retention-days: 30
+
+      - name: Verify no uncommitted changes
+        run: |
+          if ! git diff --exit-code; then
+            echo "::error::Uncommitted changes detected after linting"
+            exit 1
+          fi
+
+  # Job 2: Comprehensive Testing Matrix
+  test:
+    name: Test API ${{ matrix.api-level }} - ${{ matrix.flavor }}
+    runs-on: ubuntu-latest
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        api-level: [31, 33, 34]  # minSdk, targetSdk, latest
+        flavor: [fdroid, googlePlay]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Setup Gradle cache
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: false
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Run unit tests
+        run: ./gradlew test${{ matrix.flavor }}DebugUnitTest --continue
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run instrumented tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          target: google_apis
+          arch: x86_64
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: ./gradlew connected${{ matrix.flavor }}DebugAndroidTest --continue
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-api${{ matrix.api-level }}-${{ matrix.flavor }}
+          path: |
+            app/build/reports/tests/
+            app/build/reports/androidTests/
+            app/build/test-results/
+          retention-days: 30
+
+      - name: Generate test report
+        if: always()
+        shell: bash
+        run: |
+          echo "## Test Results (API ${{ matrix.api-level }}, ${{ matrix.flavor }})" >> $GITHUB_STEP_SUMMARY
+          echo "- API Level: ${{ matrix.api-level }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Flavor: ${{ matrix.flavor }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+
+  # Job 3: Security Scanning
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    needs: lint
+    permissions:
+      security-events: write
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Setup Gradle cache
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: false
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Run dependency vulnerability check
+        run: ./gradlew dependencyCheckAnalyze --continue || echo "::warning::Vulnerabilities found"
+        continue-on-error: true
+
+      - name: Check for hardcoded secrets
+        run: |
+          echo "### Secret Scanning Results" >> $GITHUB_STEP_SUMMARY
+          # Check for common secret patterns
+          if grep -r -i "api_key\s*=\s*['\"]" app/src/ --exclude-dir=test --exclude-dir=androidTest; then
+            echo "::warning::Potential hardcoded API keys found"
+            echo "⚠️ Hardcoded API keys detected" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ No hardcoded secrets detected" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: License compliance check
+        run: ./gradlew checkLicense || echo "::warning::License issues found"
+        continue-on-error: true
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-reports
+          path: |
+            build/reports/dependency-check-report.html
+          retention-days: 30
+
+  # Job 4: Build APKs for all variants
+  build:
+    name: Build APKs
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    strategy:
+      matrix:
+        flavor: [fdroid, googlePlay]
+        buildType: [debug, release]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Setup Gradle cache
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: false
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Build ${{ matrix.flavor }} ${{ matrix.buildType }} APK
+        run: ./gradlew assemble${{ matrix.flavor }}${{ matrix.buildType }}
+
+      - name: Generate build metadata
+        shell: bash
+        run: |
+          APK_PATH=$(find app/build/outputs/apk/${{ matrix.flavor }}/${{ matrix.buildType }}/ -name "*.apk" | head -1)
+          if [ -n "$APK_PATH" ]; then
+            APK_SIZE=$(du -h "$APK_PATH" | cut -f1)
+            echo "### Build Artifact: ${{ matrix.flavor }}-${{ matrix.buildType }}" >> $GITHUB_STEP_SUMMARY
+            echo "- Size: $APK_SIZE" >> $GITHUB_STEP_SUMMARY
+            echo "- Path: $APK_PATH" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-${{ matrix.flavor }}-${{ matrix.buildType }}
+          path: app/build/outputs/apk/${{ matrix.flavor }}/${{ matrix.buildType }}/*.apk
+          retention-days: 30
+
+  # Job 5: Code Coverage Analysis
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Setup Gradle cache
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: false
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Generate coverage report
+        run: |
+          ./gradlew jacocoTestReport || echo "::warning::Coverage generation failed"
+        continue-on-error: true
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        if: github.event_name != 'schedule'
+        with:
+          files: ./app/build/reports/jacoco/test*/jacoco*.xml
+          fail_ci_if_error: false
+          verbose: true
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: |
+            app/build/reports/jacoco/
+          retention-days: 30
+
+      - name: Coverage summary
+        if: always()
+        run: |
+          echo "### Code Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "Coverage reports generated for all test variants" >> $GITHUB_STEP_SUMMARY
+
+  # Job 6: CI Summary
+  ci-summary:
+    name: CI Summary
+    runs-on: ubuntu-latest
+    needs: [lint, test, security, build, coverage]
+    if: always()
+    steps:
+      - name: Generate CI summary
+        run: |
+          echo "# CI Pipeline Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Lint | ${{ needs.lint.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Test | ${{ needs.test.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security | ${{ needs.security.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Build | ${{ needs.build.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Coverage | ${{ needs.coverage.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Set overall status
+          if [[ "${{ needs.lint.result }}" == "success" &&
+                "${{ needs.test.result }}" == "success" &&
+                "${{ needs.security.result }}" == "success" &&
+                "${{ needs.build.result }}" == "success" ]]; then
+            echo "✅ **CI Pipeline: SUCCESS**" >> $GITHUB_STEP_SUMMARY
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
+            echo "❌ **CI Pipeline: FAILED**" >> $GITHUB_STEP_SUMMARY
+            echo "status=failure" >> $GITHUB_OUTPUT
+            exit 1
+          fi

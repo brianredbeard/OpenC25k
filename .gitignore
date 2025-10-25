@@ -34,3 +34,8 @@ google-services.json
 
 # Git worktrees
 .worktrees/
+
+# CI/CD Reports
+detekt-baseline.xml
+build/reports/
+app/build/reports/
