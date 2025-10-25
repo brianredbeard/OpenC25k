@@ -19,6 +19,8 @@ class RunAnnouncer(
 
     private var tts: TextToSpeech? = null
     private var isInitialized = false
+    private var hasFocusForUtterance: Boolean = false
+    private var currentUtteranceId: String? = null
 
     init {
         tts = TextToSpeech(context, this)
@@ -38,19 +40,50 @@ class RunAnnouncer(
 
                 textToSpeech.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                     override fun onStart(utteranceId: String?) {
-                        audioFocusManager.requestFocus()
-                        Timber.d("TTS started: $utteranceId")
+                        synchronized(this@RunAnnouncer) {
+                            // Only request focus if we don't already have it
+                            if (!hasFocusForUtterance) {
+                                val granted = audioFocusManager.requestFocus()
+                                if (granted) {
+                                    hasFocusForUtterance = true
+                                    currentUtteranceId = utteranceId
+                                    Timber.d("TTS started: $utteranceId, focus granted")
+                                } else {
+                                    Timber.w("TTS started: $utteranceId, focus denied")
+                                }
+                            } else {
+                                Timber.d("TTS started: $utteranceId, reusing existing focus")
+                            }
+                        }
                     }
 
                     override fun onDone(utteranceId: String?) {
-                        audioFocusManager.abandonFocus()
-                        Timber.d("TTS done: $utteranceId")
+                        synchronized(this@RunAnnouncer) {
+                            // Only abandon focus if this utterance actually holds it
+                            if (hasFocusForUtterance && utteranceId == currentUtteranceId) {
+                                audioFocusManager.abandonFocus()
+                                hasFocusForUtterance = false
+                                currentUtteranceId = null
+                                Timber.d("TTS done: $utteranceId, focus abandoned")
+                            } else {
+                                Timber.d("TTS done: $utteranceId, but focus already released or different utterance")
+                            }
+                        }
                     }
 
                     @Deprecated("Deprecated in Java")
                     override fun onError(utteranceId: String?) {
-                        audioFocusManager.abandonFocus()
-                        Timber.e("TTS error: $utteranceId")
+                        synchronized(this@RunAnnouncer) {
+                            // Only abandon focus if this utterance actually holds it
+                            if (hasFocusForUtterance && utteranceId == currentUtteranceId) {
+                                audioFocusManager.abandonFocus()
+                                hasFocusForUtterance = false
+                                currentUtteranceId = null
+                                Timber.e("TTS error: $utteranceId, focus abandoned")
+                            } else {
+                                Timber.e("TTS error: $utteranceId, but focus already released or different utterance")
+                            }
+                        }
                     }
                 })
 
@@ -134,12 +167,22 @@ class RunAnnouncer(
     }
 
     /**
-     * Stops any ongoing speech
+     * Stops any ongoing speech and releases audio focus if held
      */
     fun stop() {
-        if (tts?.isSpeaking == true) {
-            tts?.stop()
-            audioFocusManager.abandonFocus()
+        synchronized(this) {
+            // Abandon focus BEFORE stopping TTS to prevent race with callbacks
+            if (hasFocusForUtterance) {
+                audioFocusManager.abandonFocus()
+                hasFocusForUtterance = false
+                currentUtteranceId = null
+                Timber.d("TTS stopped, focus abandoned")
+            }
+
+            if (tts?.isSpeaking == true) {
+                tts?.stop()
+                Timber.d("TTS speech interrupted")
+            }
         }
     }
 

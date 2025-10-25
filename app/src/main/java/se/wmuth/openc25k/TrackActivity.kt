@@ -98,6 +98,9 @@ class TrackActivity : AppCompatActivity(), RunTimer.RunTimerListener {
             binding.twTimer.text = next.time.toString()
         }
 
+        // Stop any in-progress TTS to prevent focus leak
+        announcer.stop()
+
         // Announce the interval change with duration if TTS is enabled
         if (tts) {
             announcer.announceIntervalWithDuration(next.title, next.time)
@@ -137,6 +140,9 @@ class TrackActivity : AppCompatActivity(), RunTimer.RunTimerListener {
         runOnUiThread {
             // Announce halfway point to TalkBack
             binding.root.announceForAccessibility(getString(R.string.halfway_announcement))
+
+            // Stop any in-progress TTS to prevent focus leak
+            announcer.stop()
 
             // Announce via TTS if enabled
             if (tts) {

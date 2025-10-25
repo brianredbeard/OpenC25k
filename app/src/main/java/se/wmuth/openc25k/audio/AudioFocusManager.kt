@@ -37,6 +37,24 @@ class AudioFocusManager(context: Context) {
     }
 
     /**
+     * Get the current reference count for diagnostics and testing
+     */
+    fun getRefCount(): Int {
+        synchronized(this) {
+            return refCount
+        }
+    }
+
+    /**
+     * Check if we currently hold audio focus
+     */
+    fun hasFocus(): Boolean {
+        synchronized(this) {
+            return hasFocus
+        }
+    }
+
+    /**
      * Request audio focus for a short announcement or beep.
      *
      * Uses reference counting to handle overlapping requests:
@@ -91,12 +109,19 @@ class AudioFocusManager(context: Context) {
     fun abandonFocus() {
         synchronized(this) {
             if (!hasFocus) {
-                Log.w(TAG, "abandonFocus called but we don't have focus")
+                Log.w(TAG, "abandonFocus called but we don't have focus - possible double-abandon")
+                // Print stack trace to help debug where the extra abandon came from
+                Log.w(TAG, "Stack trace:", Exception("abandonFocus without focus"))
                 return
             }
 
             refCount--
             Log.d(TAG, "Decrementing focus refCount=$refCount")
+
+            if (refCount < 0) {
+                Log.e(TAG, "FOCUS LEAK: refCount went negative! This indicates more abandons than requests")
+                Log.e(TAG, "Stack trace:", Exception("Negative refCount"))
+            }
 
             // Only abandon when all requesters are done
             if (refCount <= 0) {
