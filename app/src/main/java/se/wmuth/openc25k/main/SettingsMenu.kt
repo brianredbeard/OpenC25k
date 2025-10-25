@@ -24,6 +24,11 @@ class SettingsMenu(p: SettingsMenuListener, s: Menu) : Toolbar.OnMenuItemClickLi
         fun createVolumeDialog()
 
         /**
+         * Creates the sound selection dialog
+         */
+        fun createSoundSelectionDialog()
+
+        /**
          * Returns the current sound setting
          * @return true if enabled, false if disabled
          */
@@ -68,6 +73,7 @@ class SettingsMenu(p: SettingsMenuListener, s: Menu) : Toolbar.OnMenuItemClickLi
 
             R.id.setVol -> parent.createVolumeDialog()
             R.id.testVol -> parent.testVolume()
+            R.id.soundSelection -> parent.createSoundSelectionDialog()
             else -> return false
         }
         return true
