@@ -11,6 +11,7 @@ import kotlinx.coroutines.runBlocking
 import se.wmuth.openc25k.R
 import se.wmuth.openc25k.data.Interval
 import se.wmuth.openc25k.data.Run
+import se.wmuth.openc25k.data.model.SoundType
 
 /**
  * Allows for easy editing of persistent data on the android device for the app
@@ -123,6 +124,34 @@ class DataHandler(pCon: Context, datastore: DataStore<Preferences>) {
         runBlocking {
             ds.edit { settings ->
                 settings[vol] = volume
+            }
+        }
+    }
+
+    /**
+     * Gets the sound type setting
+     * @return the saved sound type, default BEEP
+     */
+    fun getSoundType(): SoundType {
+        val st = stringPreferencesKey("soundType")
+        var d: String? = null
+        runBlocking {
+            ds.edit { settings ->
+                d = settings[st]
+            }
+        }
+        return if (d != null) SoundType.fromName(d!!) else SoundType.BEEP
+    }
+
+    /**
+     * Persistently stores the sound type setting
+     * @param soundType which sound to play for interval notifications
+     */
+    fun setSoundType(soundType: SoundType) {
+        val st = stringPreferencesKey("soundType")
+        runBlocking {
+            ds.edit { settings ->
+                settings[st] = soundType.name
             }
         }
     }
